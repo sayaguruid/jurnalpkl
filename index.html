@@ -6,19 +6,20 @@
     <title>Jurnal PKL SMK Negeri 4 Garut</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Library untuk Download PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
     <!-- LOGIN PAGE -->
     <div id="login-page" class="container">
         <div class="login-box">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Garut_Regency_Logo.png" alt="Logo" class="logo">
             <h2>JURNAL PKL 2026</h2>
             <p>SMK Negeri 4 Garut</p>
             <form id="login-form">
                 <div class="input-group">
                     <i class="fas fa-id-card"></i>
-                    <input type="text" id="nis-input" placeholder="Masukkan Nomor Induk Siswa (NIS)" required>
+                    <input type="text" id="nis-input" placeholder="Masukkan NIS" required>
                 </div>
                 <button type="submit" id="login-btn">MASUK</button>
                 <p id="login-error" class="error-msg"></p>
@@ -29,75 +30,171 @@
     <!-- DASHBOARD PAGE -->
     <div id="dashboard-page" class="container hidden">
         <nav class="navbar">
-            <h2>Jurnal PKL</h2>
+            <h2>Dashboard PKL</h2>
             <div class="nav-right">
                 <span id="user-name">Halo, Siswa</span>
                 <button id="logout-btn"><i class="fas fa-sign-out-alt"></i> Keluar</button>
             </div>
         </nav>
 
-        <div class="dashboard-content">
-            <!-- Identitas Card -->
-            <div class="card profile-card">
-                <h3><i class="fas fa-user"></i> Identitas Peserta</h3>
-                <div class="profile-info">
-                    <p><strong>Nama:</strong> <span id="d-nama">-</span></p>
-                    <p><strong>NIS:</strong> <span id="d-nis">-</span></p>
-                    <p><strong>Kelas:</strong> <span id="d-kelas">-</span></p>
-                    <p><strong>Tempat PKL:</strong> <span id="d-pkl">-</span></p>
-                </div>
-            </div>
-
-            <!-- Form Jurnal -->
-            <div class="card form-card">
-                <h3><i class="fas fa-pen"></i> Isi Jurnal Harian</h3>
-                <form id="jurnal-form">
-                    <div class="form-group">
-                        <label>Tanggal</label>
-                        <input type="date" id="j-tanggal" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Unit Kerja / Pekerjaan</label>
-                        <input type="text" id="j-unit" placeholder="Apa yang dikerjakan hari ini?" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Catatan</label>
-                        <textarea id="j-catatan" rows="4" placeholder="Deskripsi singkat pekerjaan..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Kehadiran</label>
-                        <select id="j-kehadiran" required>
-                            <option value="Hadir">Hadir</option>
-                            <option value="Izin">Izin</option>
-                            <option value="Sakit">Sakit</option>
-                            <option value="Bolos">Bolos</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Simpan Jurnal</button>
-                    <p id="jurnal-msg"></p>
-                </form>
-            </div>
-
-            <!-- Riwayat Jurnal -->
-            <div class="card history-card">
-                <h3><i class="fas fa-history"></i> Riwayat Jurnal</h3>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Tanggal</th>
-                                <th>Unit Kerja</th>
-                                <th>Catatan</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="jurnal-table-body">
-                            <!-- Data akan diisi oleh JS -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab('profil')">Identitas</button>
+            <button class="tab-btn" onclick="openTab('jurnal')">Jurnal Harian</button>
+            <button class="tab-btn" onclick="openTab('catatan')">Catatan Kegiatan</button>
+            <button class="tab-btn" onclick="openTab('dokumen')">Dokumentasi</button>
+            <button class="tab-btn" onclick="openTab('rekap')">Rekap & Cetak</button>
         </div>
+
+        <div class="dashboard-content">
+            
+            <!-- TAB PROFIL -->
+            <div id="profil" class="tab-content active">
+                <div class="card">
+                    <h3><i class="fas fa-user"></i> Identitas DUDIKA & Peserta</h3>
+                    <form id="profil-form">
+                        <h4>Identitas DUDIKA</h4>
+                        <div class="form-row">
+                            <input type="text" id="p-namaDUDIKA" placeholder="Nama DUDIKA">
+                            <input type="text" id="p-bidangUsaha" placeholder="Bidang Usaha/Jenis Kegiatan">
+                        </div>
+                        <div class="form-row">
+                            <input type="text" id="p-alamatDUDIKA" placeholder="Alamat DUDIKA">
+                            <input type="text" id="p-telpDUDIKA" placeholder="No. Telp DUDIKA">
+                        </div>
+                        <div class="form-row">
+                            <input type="text" id="p-pimpinanDUDIKA" placeholder="Nama Pimpinan">
+                            <input type="text" id="p-pembimbingDUDIKA" placeholder="Nama Pembimbing DUDIKA">
+                        </div>
+
+                        <h4 style="margin-top:20px;">Identitas Peserta</h4>
+                        <div class="form-row">
+                            <input type="text" id="p-nama" placeholder="Nama Lengkap">
+                            <input type="text" id="p-nis" placeholder="NIS" disabled>
+                            <input type="text" id="p-kelas" placeholder="Kelas">
+                        </div>
+                        <div class="form-row">
+                            <input type="text" id="p-ttl" placeholder="Tempat, Tanggal Lahir">
+                            <select id="p-golDar"><option value="">Gol. Darah</option><option>O</option><option>A</option><option>B</option><option>AB</option></select>
+                        </div>
+                        <div class="form-row">
+                            <input type="text" id="p-alamatSiswa" placeholder="Alamat Siswa">
+                            <input type="text" id="p-noHpSiswa" placeholder="No. HP Siswa">
+                        </div>
+                        <div class="form-row">
+                            <input type="text" id="p-namaOrtu" placeholder="Nama Orang Tua/Wali">
+                            <input type="text" id="p-alamatOrtu" placeholder="Alamat Ortu">
+                            <input type="text" id="p-noHpOrtu" placeholder="No. HP Ortu">
+                        </div>
+                        
+                        <h4 style="margin-top:20px;">Pembimbing</h4>
+                        <div class="form-row">
+                            <input type="text" id="p-instruktur" placeholder="Nama Instruktur">
+                            <input type="text" id="p-guruPembimbing" placeholder="Nama Guru Pembimbing">
+                        </div>
+
+                        <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Simpan Identitas</button>
+                        <p id="profil-msg"></p>
+                    </form>
+                </div>
+            </div>
+
+            <!-- TAB JURNAL -->
+            <div id="jurnal" class="tab-content">
+                <div class="card form-card">
+                    <h3><i class="fas fa-pen"></i> Isi Jurnal Harian</h3>
+                    <form id="jurnal-form">
+                        <div class="form-row">
+                            <input type="date" id="j-tanggal" required>
+                            <select id="j-kehadiran" required>
+                                <option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option><option value="Bolos">Bolos</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="j-unit" placeholder="Unit Kerja / Pekerjaan" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="j-catatan" rows="3" placeholder="Catatan Kegiatan..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Simpan Jurnal</button>
+                        <p id="jurnal-msg"></p>
+                    </form>
+                </div>
+                <div class="card">
+                    <h3>Riwayat Jurnal</h3>
+                    <div class="table-responsive">
+                        <table id="tabel-jurnal">
+                            <thead><tr><th>Tanggal</th><th>Pekerjaan</th><th>Catatan</th><th>Status</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB CATATAN KEGIATAN -->
+            <div id="catatan" class="tab-content">
+                <div class="card form-card">
+                    <h3><i class="fas fa-book"></i> Catatan Kegiatan PKL</h3>
+                    <form id="catatan-form">
+                        <input type="date" id="c-tanggal" required>
+                        <input type="text" id="c-namaPekerjaan" placeholder="A. Nama Pekerjaan" required>
+                        <textarea id="c-perencanaan" rows="3" placeholder="B. Perencanaan Kegiatan"></textarea>
+                        <textarea id="c-pelaksanaan" rows="3" placeholder="C. Pelaksanaan Kegiatan / Hasil"></textarea>
+                        <textarea id="c-catatanInstruktur" rows="3" placeholder="D. Catatan Instruktur"></textarea>
+                        <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Simpan Catatan</button>
+                        <p id="catatan-msg"></p>
+                    </form>
+                </div>
+            </div>
+
+            <!-- TAB DOKUMENTASI -->
+            <div id="dokumen" class="tab-content">
+                <div class="card form-card">
+                    <h3><i class="fas fa-camera"></i> Upload Dokumentasi</h3>
+                    <form id="dokumen-form">
+                        <input type="date" id="d-tanggal" required>
+                        <input type="file" id="d-foto" accept="image/*" required>
+                        <input type="text" id="d-keterangan" placeholder="Keterangan Foto" required>
+                        <button type="submit" class="btn-submit"><i class="fas fa-upload"></i> Upload Foto</button>
+                        <p id="dokumen-msg"></p>
+                    </form>
+                </div>
+                <div class="card">
+                    <h3>Galeri Dokumentasi</h3>
+                    <div id="galeri-foto" class="galeri-grid"></div>
+                </div>
+            </div>
+
+            <!-- TAB REKAP & CETAK -->
+            <div id="rekap" class="tab-content">
+                <div class="card">
+                    <h3><i class="fas fa-chart-bar"></i> Rekapitulasi Kehadiran</h3>
+                    <div id="rekap-box" class="rekap-container">
+                        <div class="rekap-item hijau"><span>Hadir</span><br><b id="r-hadir">0</b> Hari</div>
+                        <div class="rekap-item kuning"><span>Izin</span><br><b id="r-izin">0</b> Hari</div>
+                        <div class="rekap-item biru"><span>Sakit</span><br><b id="r-sakit">0</b> Hari</div>
+                        <div class="rekap-item merah"><span>Bolos</span><br><b id="r-bolos">0</b> Hari</div>
+                    </div>
+                    <button onclick="generatePDF()" class="btn-pdf"><i class="fas fa-file-pdf"></i> Download Jurnal PDF</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- DIV UNTUK PDF (DISHIDDEN) -->
+    <div id="print-area" class="print-area">
+        <h2>JURNAL PRAKTIK KERJA LAPANGAN (PKL)</h2>
+        <h3>SMK NEGERI 4 GARUT TAHUN 2026</h3>
+        <br>
+        <div id="pdf-profil"></div>
+        <h4>JURNAL KEGIATAN</h4>
+        <table border="1" style="width:100%; border-collapse:collapse; text-align:left;">
+            <thead><tr><th>No</th><th>Hari/Tanggal</th><th>Unit Kerja/Pekerjaan</th><th>Catatan</th><th>Hadir</th></tr></thead>
+            <tbody id="pdf-tabel-jurnal"></tbody>
+        </table>
+        <br>
+        <h4>REKAPITULASI KEHADIRAN</h4>
+        <p id="pdf-rekap"></p>
     </div>
 
     <script src="script.js"></script>
