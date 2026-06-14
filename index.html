@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jurnal PKL SMK Negeri 4 Garut</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- LOGIN PAGE -->
+    <div id="login-page" class="container">
+        <div class="login-box">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Garut_Regency_Logo.png" alt="Logo" class="logo">
+            <h2>JURNAL PKL 2026</h2>
+            <p>SMK Negeri 4 Garut</p>
+            <form id="login-form">
+                <div class="input-group">
+                    <i class="fas fa-id-card"></i>
+                    <input type="text" id="nis-input" placeholder="Masukkan Nomor Induk Siswa (NIS)" required>
+                </div>
+                <button type="submit" id="login-btn">MASUK</button>
+                <p id="login-error" class="error-msg"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- DASHBOARD PAGE -->
+    <div id="dashboard-page" class="container hidden">
+        <nav class="navbar">
+            <h2>Jurnal PKL</h2>
+            <div class="nav-right">
+                <span id="user-name">Halo, Siswa</span>
+                <button id="logout-btn"><i class="fas fa-sign-out-alt"></i> Keluar</button>
+            </div>
+        </nav>
+
+        <div class="dashboard-content">
+            <!-- Identitas Card -->
+            <div class="card profile-card">
+                <h3><i class="fas fa-user"></i> Identitas Peserta</h3>
+                <div class="profile-info">
+                    <p><strong>Nama:</strong> <span id="d-nama">-</span></p>
+                    <p><strong>NIS:</strong> <span id="d-nis">-</span></p>
+                    <p><strong>Kelas:</strong> <span id="d-kelas">-</span></p>
+                    <p><strong>Tempat PKL:</strong> <span id="d-pkl">-</span></p>
+                </div>
+            </div>
+
+            <!-- Form Jurnal -->
+            <div class="card form-card">
+                <h3><i class="fas fa-pen"></i> Isi Jurnal Harian</h3>
+                <form id="jurnal-form">
+                    <div class="form-group">
+                        <label>Tanggal</label>
+                        <input type="date" id="j-tanggal" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Unit Kerja / Pekerjaan</label>
+                        <input type="text" id="j-unit" placeholder="Apa yang dikerjakan hari ini?" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Catatan</label>
+                        <textarea id="j-catatan" rows="4" placeholder="Deskripsi singkat pekerjaan..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Kehadiran</label>
+                        <select id="j-kehadiran" required>
+                            <option value="Hadir">Hadir</option>
+                            <option value="Izin">Izin</option>
+                            <option value="Sakit">Sakit</option>
+                            <option value="Bolos">Bolos</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Simpan Jurnal</button>
+                    <p id="jurnal-msg"></p>
+                </form>
+            </div>
+
+            <!-- Riwayat Jurnal -->
+            <div class="card history-card">
+                <h3><i class="fas fa-history"></i> Riwayat Jurnal</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>Unit Kerja</th>
+                                <th>Catatan</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="jurnal-table-body">
+                            <!-- Data akan diisi oleh JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
