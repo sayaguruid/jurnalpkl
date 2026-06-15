@@ -3,285 +3,371 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jurnal Digital PKL SMK Negeri 4 Garut</title>
-    
-    <!-- Link ke Style CSS -->
-    <link rel="stylesheet" href="style.css">
+    <title>Jurnal & Catatan Kegiatan PKL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: {
+            primary: { DEFAULT:'#0D3B3B', light:'#1A5C5C', dark:'#072222', 50:'#E8F5F5' },
+            accent: { DEFAULT:'#B8860B', light:'#D4A017', dark:'#8B6508' },
+            cream: { DEFAULT:'#F5F0E8', dark:'#E8DFD0', 50:'#FAF8F4' },
+        }, fontFamily: { display:['Merriweather','serif'], body:['Source Sans 3','sans-serif'] } } } }
+    </script>
+    <style>
+        :root{--bg:#F5F0E8;--fg:#1A1A2E;--muted:#6B7280;--accent:#B8860B;--primary:#0D3B3B;--card:#fff;--border:#D1D5DB}
+        *{box-sizing:border-box} body{font-family:'Source Sans 3',sans-serif;background:var(--bg);color:var(--fg);background-image:repeating-linear-gradient(45deg,transparent,transparent 35px,rgba(13,59,59,.012) 35px,rgba(13,59,59,.012) 36px)}
+        .login-bg{min-height:100vh;background:linear-gradient(-45deg,#072222,#0D3B3B,#1A5C5C,#0D3B3B);background-size:400% 400%;animation:gradShift 15s ease infinite;position:relative;display:flex;align-items:center;justify-content:center}
+        .login-bg::after{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1px);background-size:24px 24px}
+        @keyframes gradShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+        .login-card{background:var(--card);border-radius:20px;padding:40px 36px;max-width:440px;width:92%;box-shadow:0 24px 64px rgba(0,0,0,.25);position:relative;z-index:2;animation:cardIn .6s cubic-bezier(.34,1.56,.64,1) forwards;opacity:0;transform:translateY(30px) scale(.96)}
+        @keyframes cardIn{to{opacity:1;transform:translateY(0) scale(1)}}
+        .view{display:none;animation:fadeIn .4s ease forwards}.view.active{display:block}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+        .s-card{background:var(--card);border-radius:14px;box-shadow:0 2px 16px rgba(0,0,0,.05);border-left:4px solid var(--accent);padding:24px 28px;margin-bottom:24px}
+        .fi{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'Source Sans 3',sans-serif;font-size:.95rem;transition:border-color .2s,box-shadow .2s;background:#FAFAF8}
+        .fi:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(13,59,59,.1)}
+        .fl{font-weight:600;font-size:.85rem;color:var(--fg);margin-bottom:5px;display:block}
+        .btn{padding:11px 24px;border-radius:10px;font-weight:700;font-size:.9rem;border:none;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px;font-family:'Source Sans 3',sans-serif}
+        .btn:active{transform:scale(.97)}
+        .btn-p{background:var(--primary);color:#fff}.btn-p:hover{background:#1A5C5C;box-shadow:0 4px 12px rgba(13,59,59,.25)}
+        .btn-a{background:var(--accent);color:#fff}.btn-a:hover{background:#D4A017;box-shadow:0 4px 12px rgba(184,134,11,.3)}
+        .btn-o{background:transparent;color:var(--primary);border:2px solid var(--primary)}.btn-o:hover{background:var(--primary);color:#fff}
+        .btn-d{background:#FEE2E2;color:#DC2626;border:2px solid #FECACA}.btn-d:hover{background:#DC2626;color:#fff;border-color:#DC2626}
+        .btn-sm{padding:7px 14px;font-size:.8rem;border-radius:7px} .btn-icon{width:36px;height:36px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:8px}
+        .entry-card{background:var(--card);border-radius:12px;padding:18px 20px;margin-bottom:12px;border-left:4px solid var(--border);transition:all .2s;position:relative}.entry-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.06)}
+        .entry-card.hadir{border-left-color:#059669}.entry-card.izin{border-left-color:#2563EB}.entry-card.sakit{border-left-color:#D97706}.entry-card.bolos{border-left-color:#DC2626}
+        .att-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:700}
+        .att-badge.hadir{background:#ECFDF5;color:#059669}.att-badge.izin{background:#EFF6FF;color:#2563EB}.att-badge.sakit{background:#FFFBEB;color:#D97706}.att-badge.bolos{background:#FEF2F2;color:#DC2626}
+        .tab-nav{display:flex;gap:4px;margin-bottom:24px;background:#E8DFD0;border-radius:12px;padding:5px;overflow-x:auto}
+        .tab-btn{flex:1;padding:12px 8px;text-align:center;border-radius:9px;font-weight:700;font-size:.85rem;cursor:pointer;transition:all .2s;color:var(--muted);background:transparent;border:none;font-family:'Source Sans 3',sans-serif;white-space:nowrap}
+        .tab-btn.active{background:var(--primary);color:#fff;box-shadow:0 2px 8px rgba(13,59,59,.2)}.tab-btn:hover:not(.active){background:rgba(13,59,59,.05)}
+        .tab-content{display:none;animation:fadeIn .3s ease forwards}.tab-content.active{display:block}
+        .ck-label{font-family:'Merriweather',serif;font-weight:700;font-size:1rem;color:var(--primary);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+        .ck-label span{color:var(--accent);font-family:'Source Sans 3',sans-serif;font-weight:800;font-size:1.2rem}
+        .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);z-index:9998;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all .3s}
+        .modal-bg.open{opacity:1;visibility:visible} .modal-box{background:#fff;border-radius:16px;padding:28px;max-width:600px;width:92%;max-height:90vh;overflow-y:auto;transform:scale(.92);transition:transform .3s}.modal-bg.open .modal-box{transform:scale(1)}
+        .toast-wrap{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px}
+        .toast{padding:13px 18px;border-radius:10px;font-weight:600;font-size:.88rem;display:flex;align-items:center;gap:9px;box-shadow:0 8px 24px rgba(0,0,0,.15);transform:translateX(120%);transition:transform .35s cubic-bezier(.34,1.56,.64,1);max-width:340px}
+        .toast.show{transform:translateX(0)}
+        .toast-success{background:#059669;color:#fff}.toast-error{background:#DC2626;color:#fff}.toast-warning{background:#D97706;color:#fff}.toast-info{background:var(--primary);color:#fff}
+        select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236B7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+        .empty-state{text-align:center;padding:48px 20px;color:var(--muted)}.empty-state i{font-size:3rem;margin-bottom:12px;opacity:.4}
+        .navbar{background:var(--primary);color:#fff;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+        .sync-indicator{font-size:.75rem;display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.7)}
+        .sync-dot{width:8px;height:8px;border-radius:50%;background:#059669;animation:pulse 2s infinite} @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+        
+        /* Custom Upload Area */
+        .upload-area{border:2px dashed var(--border);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:all .2s;background:#FAFAF8}
+        .upload-area:hover{border-color:var(--primary);background:var(--primary-50)}
+        .upload-area.has-file{border-color:var(--accent);background:#FFFBEB}
+
+        /* PDF LAYOUT STYLES */
+        #printSection { display: none; position: absolute; left: -9999px; top: 0; background: #fff; }
+        #printSection.rendering { display: block; }
+        .print-doc { font-family: 'Source Sans 3', sans-serif; color: #000; font-size: 12pt; line-height: 1.5; width: 100%; padding: 0; }
+        .print-doc h1 { text-align: center; font-family: 'Merriweather', serif; font-size: 14pt; font-weight: 900; letter-spacing: 2px; margin-bottom: 20px; text-decoration: underline; }
+        .print-doc .pf { margin-bottom: 4px; font-size: 12pt; line-height: 2; }
+        .print-doc .pf span { border-bottom: 1px dotted #000; min-width: 260px; display: inline-block; padding-left: 4px; }
+        .print-doc table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 11pt; }
+        .print-doc table th, .print-doc table td { border: 1px solid #000; padding: 6px 8px; text-align: left; vertical-align: top; }
+        .print-doc table th { background: #e8e8e8 !important; font-weight: 700; text-align: center; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .print-doc table th.catatan-col { width: 25%; }
+        .print-doc table tbody tr { page-break-inside: avoid; }
+        .print-doc .rk { font-weight: 700; font-size: 12pt; margin-top: 20px; margin-bottom: 8px; text-decoration: underline; }
+        .print-doc .ri { font-size: 12pt; margin-bottom: 4px; }
+        .print-doc .sign-section { margin-top: 50px; text-align: right; width: 50%; float: right; }
+        .print-doc .sign-section .sign-label { font-size: 12pt; margin-bottom: 8px; }
+        .print-doc .sign-section .sign-space { height: 70px; }
+        .print-doc .sign-section .sign-name { border-top: 1px solid #000; display: inline-block; padding-top: 4px; min-width: 200px; text-align: center; font-size: 12pt; font-weight: bold; }
+        .print-doc .page-break { page-break-before: always; display: block; height: 0; }
+        .print-doc .ck-sec { margin-top: 16px; page-break-inside: avoid; }
+        .print-doc .ck-lbl { font-weight: 700; font-size: 12pt; margin-bottom: 6px; }
+        .print-doc .ck-val { border: 1px solid #000; padding: 8px; min-height: 80px; font-size: 11pt; white-space: pre-wrap; line-height: 1.5; }
+        .print-doc .dok-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
+        .print-doc .dok-item { page-break-inside: avoid; text-align: center; }
+        .print-doc .dok-item img { width: 100%; height: 220px; object-fit: cover; border: 1px solid #000; border-radius: 4px; }
+        .print-doc .dok-item p { font-size: 10pt; margin-top: 4px; }
+
+        @media(max-width:640px){.login-card{padding:28px 22px}.s-card{padding:18px 16px}.navbar{padding:0 14px}}
+    </style>
 </head>
 <body>
 
-    <!-- LOGIN SCREEN -->
-    <div id="login-screen">
-        <div class="login-card">
-            <div style="margin-bottom: 20px; font-weight: bold; font-size: 1.2rem;">
-                E-JURNAL PKL<br>SMK Negeri 4 Garut
-            </div>
-            <form id="login-form">
-                <input type="number" id="nis-input" placeholder="Masukkan NIS Anda" required>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Masuk</button>
-            </form>
+<div id="toastWrap" class="toast-wrap"></div>
+
+<!-- ============ LOGIN VIEW ============ -->
+<div id="loginView" class="view active">
+    <div class="login-bg"><div class="login-card">
+        <div class="text-center mb-6"><div class="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center mx-auto mb-4 shadow-lg"><i class="fas fa-book-open text-white text-2xl"></i></div><h1 class="font-display font-black text-2xl text-primary tracking-wide">JURNAL PKL</h1><p class="text-sm text-gray-400 mt-1">Masuk untuk mengelola jurnal kegiatan Anda</p></div>
+        <div class="mb-4"><label class="fl">NISN</label><input type="text" id="loginNisn" class="fi text-center text-lg tracking-widest font-bold" placeholder="Masukkan NISN" maxlength="10" onkeydown="if(event.key==='Enter')handleLogin()"></div>
+        <button onclick="handleLogin()" class="btn btn-p w-full justify-center text-base mb-4"><i class="fas fa-sign-in-alt"></i> Masuk</button>
+        <p class="text-center text-sm text-gray-400">Belum punya akun? <a href="#" onclick="showView('register')" class="text-accent font-semibold hover:underline">Daftar di sini</a></p>
+    </div></div>
+</div>
+
+<!-- ============ REGISTER VIEW ============ -->
+<div id="registerView" class="view">
+    <div class="login-bg"><div class="login-card">
+        <div class="text-center mb-5"><div class="w-14 h-14 rounded-2xl bg-accent flex items-center justify-center mx-auto mb-3 shadow-lg"><i class="fas fa-user-plus text-white text-xl"></i></div><h1 class="font-display font-bold text-xl text-primary">Pendaftaran Peserta PKL</h1></div>
+        <div class="space-y-3 mb-5">
+            <div><label class="fl">NISN <span class="text-red-500">*</span></label><input type="text" id="regNisn" class="fi" placeholder="Nomor Induk Siswa Nasional" maxlength="10"></div>
+            <div><label class="fl">Nama Lengkap <span class="text-red-500">*</span></label><input type="text" id="regNama" class="fi" placeholder="Nama sesuai data sekolah"></div>
+            <div><label class="fl">Dunia Kerja / Tempat PKL <span class="text-red-500">*</span></label><input type="text" id="regDuniaKerja" class="fi" placeholder="Nama perusahaan atau instansi"></div>
+            <div><label class="fl">Nama Instruktur</label><input type="text" id="regInstruktur" class="fi" placeholder="Instruktur di tempat PKL"></div>
+            <div><label class="fl">Nama Guru Pembimbing</label><input type="text" id="regGuru" class="fi" placeholder="Guru pembimbing dari sekolah"></div>
         </div>
-    </div>
+        <button onclick="handleRegister()" class="btn btn-a w-full justify-center text-base mb-4"><i class="fas fa-check-circle"></i> Daftar Sekarang</button>
+        <p class="text-center text-sm text-gray-400">Sudah punya akun? <a href="#" onclick="showView('login')" class="text-primary font-semibold hover:underline">Masuk di sini</a></p>
+    </div></div>
+</div>
 
-    <!-- MAIN APP -->
-    <div id="app-container" class="hidden">
-        
-        <!-- SIDEBAR -->
-        <nav class="sidebar">
-            <div class="sidebar-header">
-                <h3>SMKN 4 GARUT</h3>
-                <p id="user-display" style="font-size: 0.8rem;">Siswa</p>
+<!-- ============ DASHBOARD VIEW ============ -->
+<div id="dashboardView" class="view">
+    <nav class="navbar no-print">
+        <div class="flex items-center gap-3"><i class="fas fa-book-open text-accent"></i><span class="font-display font-bold text-lg hidden sm:inline">JURNAL PKL</span></div>
+        <div class="flex items-center gap-4">
+            <div class="sync-indicator hidden sm:flex" id="syncStatus"><span class="sync-dot"></span><span>Tersinkron</span></div>
+            <span class="text-xs bg-white/10 px-3 py-1.5 rounded-full font-semibold tracking-wide" id="navNisn"></span>
+            <button onclick="handleLogout()" class="btn btn-sm bg-white/10 text-white border-0 hover:bg-white/20" title="Keluar"><i class="fas fa-sign-out-alt"></i><span class="hidden sm:inline">Keluar</span></button>
+        </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto px-4 md:px-6 py-6">
+        <!-- Profil -->
+        <section class="s-card">
+            <div class="flex items-start justify-between mb-3 cursor-pointer" onclick="toggleProfile()">
+                <div class="flex items-center gap-2"><i class="fas fa-user-graduate text-accent"></i><span class="font-display font-bold text-primary">Data Peserta</span></div>
+                <i class="fas fa-chevron-down text-gray-400 text-sm transition-transform" id="profileArrow"></i>
             </div>
-            <ul class="nav-links">
-                <li><a href="#" onclick="showSection('identitas')" class="active">1. Identitas</a></li>
-                <li><a href="#" onclick="showSection('surat')">2. Surat Pernyataan</a></li>
-                <li><a href="#" onclick="showSection('jurnal')">3. Jurnal Harian</a></li>
-                <li><a href="#" onclick="showSection('catatan')">4. Catatan Kegiatan</a></li>
-                <li><a href="#" onclick="showSection('dokumentasi')">5. Dokumentasi</a></li>
-                <li><a href="#" onclick="showSection('observasi')">6. Observasi</a></li>
-                <li><a href="#" onclick="showSection('nilai')">7. Daftar Nilai</a></li>
-                <li style="margin-top: 20px;">
-                    <button onclick="window.print()" class="btn btn-primary" style="width: 90%; margin-left: 5%;">Cetak PDF</button>
-                </li>
-                <li>
-                    <button onclick="logout()" class="btn btn-outline" style="width: 90%; margin-left: 5%; margin-top: 10px; border-color: #dc3545; color: #dc3545;">Keluar</button>
-                </li>
-            </ul>
-        </nav>
+            <div id="profileContent" class="hidden">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="profileFields"></div>
+                <button onclick="saveProfile()" class="btn btn-o btn-sm mt-4"><i class="fas fa-save"></i> Simpan Perubahan</button>
+            </div>
+        </section>
 
-        <!-- CONTENT -->
-        <main class="main-content">
-            
-            <!-- 1. IDENTITAS -->
-            <section id="identitas" class="paper">
-                <h1 class="doc-title">JURNAL PRAKTIK KERJA LAPANGAN (PKL)</h1>
-                <h2 class="doc-subtitle">SMK NEGERI 4 GARUT <br> TAHUN 2026</h2>
-                
-                <span class="section-title">IDENTITAS DUNIA USAHA/INDUSTRI/KERJA (DUDIKA)</span>
+        <!-- Tab Navigation -->
+        <div class="tab-nav no-print">
+            <button class="tab-btn active" onclick="switchTab('jurnal')"><i class="fas fa-calendar-check mr-1"></i>Jurnal</button>
+            <button class="tab-btn" onclick="switchTab('catatan')"><i class="fas fa-file-alt mr-1"></i>Catatan</button>
+            <button class="tab-btn" onclick="switchTab('dokumentasi')"><i class="fas fa-camera mr-1"></i>Dokumentasi</button>
+            <button class="tab-btn" onclick="switchTab('cetak')"><i class="fas fa-file-pdf mr-1"></i>Unduh</button>
+        </div>
 
-                <h3 style="margin-top: 20px;">1. IDENTITAS DUNIA DUDIKA</h3>
-                <div class="row">
-                    <div class="col col-half"><label>a. Nama DUDIKA</label><input type="text" name="dudika_nama" class="save-trigger"></div>
-                    <div class="col col-half"><label>b. Bidang Usaha</label><input type="text" name="dudika_bidang" class="save-trigger"></div>
+        <!-- TAB 1: JURNAL HARIAN -->
+        <div id="tabJurnal" class="tab-content active">
+            <section class="s-card">
+                <div class="flex items-center gap-2 mb-4"><i class="fas fa-plus-circle text-accent"></i><span class="font-display font-bold text-primary">Tambah Entri Jurnal</span></div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                    <div><label class="fl">Hari / Tanggal <span class="text-red-500">*</span></label><input type="date" id="entTgl" class="fi" onchange="onDatePick()"><div class="text-xs text-accent font-semibold mt-1" id="entHari"></div></div>
+                    <div><label class="fl">Status Kehadiran <span class="text-red-500">*</span></label><select id="entKehadiran" class="fi"><option value="">-- Pilih --</option><option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option><option value="Bolos">Bolos</option></select></div>
                 </div>
-                <div class="row">
-                    <div class="col"><label>c. Alamat</label><input type="text" name="dudika_alamat" class="save-trigger"></div>
+                <div class="mb-4"><label class="fl">Unit Kerja / Pekerjaan</label><textarea id="entUnit" class="fi" rows="2" placeholder="Deskripsi pekerjaan atau kegiatan yang dilakukan"></textarea></div>
+                <div class="mb-4"><label class="fl">Catatan Pembimbing</label><input type="text" id="entCatatan" class="fi" placeholder="Opsional"></div>
+                <button onclick="addEntry()" class="btn btn-p"><i class="fas fa-save"></i> Simpan Entri Jurnal</button>
+            </section>
+            <section class="s-card">
+                <div class="flex items-center gap-2 mb-2"><i class="fas fa-history text-accent"></i><span class="font-display font-bold text-primary">Riwayat Jurnal</span><span class="ml-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold" id="entryCount">0 entri</span></div>
+                <div class="flex flex-wrap gap-2 mb-4 mt-3">
+                    <button onclick="setFilter('all')" class="btn btn-sm btn-o filter-btn active-filter" data-f="all">Semua</button>
+                    <button onclick="setFilter('Hadir')" class="btn btn-sm filter-btn" data-f="Hadir" style="background:#ECFDF5;color:#059669;border:1.5px solid #A7F3D0">Hadir</button>
+                    <button onclick="setFilter('Izin')" class="btn btn-sm filter-btn" data-f="Izin" style="background:#EFF6FF;color:#2563EB;border:1.5px solid #BFDBFE">Izin</button>
+                    <button onclick="setFilter('Sakit')" class="btn btn-sm filter-btn" data-f="Sakit" style="background:#FFFBEB;color:#D97706;border:1.5px solid #FDE68A">Sakit</button>
+                    <button onclick="setFilter('Bolos')" class="btn btn-sm filter-btn" data-f="Bolos" style="background:#FEF2F2;color:#DC2626;border:1.5px solid #FECACA">Bolos</button>
                 </div>
-                <div class="row">
-                    <div class="col col-half"><label>d. No. Telp / Fax</label><input type="text" name="dudika_telp" class="save-trigger"></div>
-                    <div class="col col-half"><label>e. Nama Pimpinan</label><input type="text" name="dudika_pimpinan" class="save-trigger"></div>
-                </div>
-                <div class="row">
-                    <div class="col"><label>f. Nama Pembimbing</label><input type="text" name="dudika_pembimbing" class="save-trigger"></div>
-                </div>
+                <div id="historyList"></div>
+            </section>
+        </div>
 
-                <h3 style="margin-top: 30px;">2. IDENTITAS SISWA</h3>
-                <div class="row" style="align-items: flex-start;">
-                    <div class="col" style="flex: 0 0 150px;">
-                        <div class="photo-box" id="photo-placeholder">3x4 cm<br>Bg Merah</div>
-                        <div class="no-print">
-                            <button class="btn btn-outline" style="font-size: 0.7rem; width: 100%;" onclick="document.getElementById('file-photo').click()">Upload Foto</button>
-                            <input type="file" id="file-photo" accept="image/*" class="hidden" onchange="previewImage(event)">
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="row">
-                            <div class="col col-half"><label>a. Nama Lengkap</label><input type="text" name="siswa_nama" class="save-trigger" style="text-transform: uppercase;"></div>
-                            <div class="col col-half">
-                                <label>b. NIS / Kelas</label>
-                                <div style="display: flex; gap: 10px;">
-                                    <input type="text" name="siswa_nis" id="siswa_nis_display" class="save-trigger" readonly>
-                                    <input type="text" name="siswa_kelas" class="save-trigger" placeholder="Kelas">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col col-half"><label>c. Tempat Tgl Lahir</label><input type="text" name="siswa_ttl" class="save-trigger"></div>
-                            <div class="col col-half">
-                                <label>d. Golongan Darah</label>
-                                <select name="siswa_goldar" class="save-trigger" style="width: 100%; padding: 8px; border-bottom: 1px dotted #999;">
-                                    <option value="">- Pilih -</option>
-                                    <option value="A">A</option>
-                                    <option value="B">B</option>
-                                    <option value="AB">AB</option>
-                                    <option value="O">O</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row"><div class="col"><label>e. Sekolah</label><input type="text" value="SMK Negeri 4 Garut" readonly style="font-weight: bold;"></div></div>
-                        <div class="row"><div class="col"><label>f. Alamat</label><input type="text" value="Jln. Raya Karangpawitan" readonly></div></div>
-                        <div class="row">
-                            <div class="col col-half"><label>g. No. Telp Sekolah</label><input type="text" value="0262 – 444305" readonly></div>
-                            <div class="col col-half"><label>h. Nama Orang Tua</label><input type="text" name="ortu_nama" class="save-trigger"></div>
-                        </div>
-                        <div class="row"><div class="col"><label>i. Alamat Orang Tua</label><input type="text" name="ortu_alamat" class="save-trigger"></div></div>
-                        <div class="row"><div class="col"><label>j. No. Telp Orang Tua</label><input type="text" name="ortu_telp" class="save-trigger"></div></div>
+        <!-- TAB 2: CATATAN KEGIATAN -->
+        <div id="tabCatatan" class="tab-content">
+             <!-- Isi sama persis seperti kode sebelumnya (dipendekkan di sini agar tidak makan tempat, pastikan copy lengkap dari code sebelumnya) -->
+             <section class="s-card"><div class="text-center mb-4"><h2 class="font-display font-bold text-primary text-lg">CATATAN KEGIATAN PKL</h2><div class="text-sm text-gray-500 mt-1 space-y-0.5 text-left max-w-md mx-auto bg-cream-50 p-3 rounded-lg border border-cream-dark"><p>Nama Peserta Didik : <span class="font-semibold text-primary" id="ckNama"></span></p><p>Dunia Kerja : <span class="font-semibold text-primary" id="ckDuniaKerja"></span></p><p>Nama Instruktur : <span class="font-semibold text-primary" id="ckInstruktur"></span></p><p>Guru Pembimbing : <span class="font-semibold text-primary" id="ckGuru"></span></p></div></div><div class="mb-4"><label class="ck-label"><span>A.</span> Nama Pekerjaan</label><input type="text" id="ckPekerjaan" class="fi"></div><div class="mb-4"><label class="ck-label"><span>B.</span> Perencanaan Kegiatan</label><textarea id="ckPerencanaan" class="fi" rows="4"></textarea></div><div class="mb-4"><label class="ck-label"><span>C.</span> Pelaksanaan Kegiatan / Hasil</label><textarea id="ckPelaksanaan" class="fi" rows="4"></textarea></div><div class="mb-4"><label class="ck-label"><span>D.</span> Catatan Instruktur</label><textarea id="ckCatatanIns" class="fi" rows="3"></textarea></div><button onclick="addCatatan()" class="btn btn-p w-full justify-center"><i class="fas fa-save"></i> Simpan Catatan Kegiatan</button></section>
+             <section class="s-card"><div class="flex items-center gap-2 mb-4"><i class="fas fa-list-alt text-accent"></i><span class="font-display font-bold text-primary">Riwayat Catatan</span></div><div id="catatanHistoryList"></div></section>
+        </div>
+
+        <!-- TAB 3: DOKUMENTASI KEGIATAN (BARU) -->
+        <div id="tabDokumentasi" class="tab-content">
+            <section class="s-card">
+                <div class="flex items-center gap-2 mb-4"><i class="fas fa-camera text-accent"></i><span class="font-display font-bold text-primary">Dokumentasi Kegiatan PKL</span></div>
+                <div class="mb-4">
+                    <label class="fl">Upload Foto Kegiatan <span class="text-red-500">*</span></label>
+                    <div class="upload-area" id="uploadArea" onclick="document.getElementById('dokFile').click()">
+                        <input type="file" id="dokFile" class="hidden" accept="image/*" onchange="previewDokImage(this)">
+                        <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
+                        <p class="text-sm text-gray-500">Klik atau seret foto ke sini</p>
+                        <p class="text-xs text-gray-400 mt-1">Format: JPG, PNG (Maks 5MB, otomatis dikompres)</p>
+                        <img id="dokPreview" class="mt-4 mx-auto rounded-lg shadow-sm hidden" style="max-height: 200px;" alt="Preview">
                     </div>
                 </div>
-
-                <div class="row" style="margin-top: 50px;">
-                    <div class="col signature-box">
-                        <p>Garut, <input type="date" name="tgl_dudika_sign" class="save-trigger" style="width: 130px; display: inline-block; border-bottom: 1px dotted #000;"></p>
-                        <p style="margin-top: 10px;">Pimpinan DUDIKA</p>
-                        <div class="signature-space"></div>
-                        <p>( <input type="text" name="dudika_pimpinan" class="save-trigger" style="text-align: center; border: none;"> )</p>
-                    </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                    <div><label class="fl">Hari / Tanggal <span class="text-red-500">*</span></label><input type="date" id="dokTgl" class="fi" onchange="onDokDatePick()"><div class="text-xs text-accent font-semibold mt-1" id="dokHari"></div></div>
+                    <div><label class="fl">Keterangan Foto</label><input type="text" id="dokKet" class="fi" placeholder="Deskripsi singkat kegiatan di foto"></div>
                 </div>
-                
-                <div style="margin-top: 20px; font-size: 0.8rem; border-top: 1px solid #ccc; padding-top: 10px;">
-                    Keterangan:<br>• Diisi dengan huruf Kapital<br>• Stempel agar dikenakan pada sebagian foto siswa
+                <button onclick="addDokumentasi()" class="btn btn-p"><i class="fas fa-save"></i> Simpan Dokumentasi</button>
+            </section>
+            <section class="s-card">
+                <div class="flex items-center gap-2 mb-4"><i class="fas fa-images text-accent"></i><span class="font-display font-bold text-primary">Galeri Dokumentasi</span><span class="ml-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold" id="dokCount">0 foto</span></div>
+                <div id="dokHistoryList" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
+            </section>
+        </div>
+
+        <!-- TAB 4: UNDUH LAPORAN -->
+        <div id="tabCetak" class="tab-content">
+            <section class="s-card text-center">
+                <div class="flex items-center justify-center gap-2 mb-4"><i class="fas fa-file-pdf text-red-600 text-2xl"></i><span class="font-display font-bold text-primary text-xl">Unduh Laporan</span></div>
+                <p class="text-gray-500 mb-6 max-w-md mx-auto">Klik tombol di bawah untuk mengunduh gabungan Jurnal Kegiatan, Catatan, dan Dokumentasi dalam format PDF.</p>
+                <button onclick="downloadFullReport()" id="btnDownload" class="btn btn-a text-lg px-8 py-3"><i class="fas fa-download"></i> Download Laporan Lengkap</button>
+                <div class="mt-8 border-t pt-6 flex flex-col items-center gap-3">
+                    <button onclick="openResetModal()" class="btn btn-d btn-sm"><i class="fas fa-trash-alt"></i> Reset Semua Data</button>
                 </div>
             </section>
+        </div>
+    </main>
+</div>
 
-            <!-- 2. SURAT PERNYATAAN -->
-            <section id="surat" class="paper hidden">
-                <div class="tabs no-print">
-                    <button class="tab-btn active" onclick="openTab(event, 'surat-ortu')">Orang Tua</button>
-                    <button class="tab-btn" onclick="openTab(event, 'surat-siswa')">Peserta Didik</button>
-                </div>
+<!-- MODALS (Edit Jurnal, Edit Catatan, Delete) -->
+<div id="editModal" class="modal-bg no-print"><div class="modal-box"><div class="flex items-center gap-2 mb-5"><i class="fas fa-edit text-accent text-lg"></i><h3 class="font-display font-bold text-lg">Edit Entri Jurnal</h3><button onclick="closeEditModal()" class="ml-auto text-gray-400 hover:text-gray-700"><i class="fas fa-times text-xl"></i></button></div><input type="hidden" id="editId"><div class="space-y-3"><div><label class="fl">Hari / Tanggal</label><input type="date" id="editTgl" class="fi" onchange="onEditDatePick()"><div class="text-xs text-accent font-semibold mt-1" id="editHari"></div></div><div><label class="fl">Status Kehadiran</label><select id="editKehadiran" class="fi"><option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option><option value="Bolos">Bolos</option></select></div><div><label class="fl">Unit Kerja / Pekerjaan</label><textarea id="editUnit" class="fi" rows="2"></textarea></div><div><label class="fl">Catatan Pembimbing</label><input type="text" id="editCatatan" class="fi"></div></div><div class="flex gap-3 mt-5"><button onclick="saveEdit()" class="btn btn-p flex-1 justify-center"><i class="fas fa-check"></i> Simpan</button><button onclick="closeEditModal()" class="btn btn-o flex-1 justify-center">Batal</button></div></div></div>
 
-                <div id="surat-ortu" class="tab-content active">
-                    <h2 class="doc-subtitle" style="text-align: center;">SURAT PERNYATAAN ORANG TUA</h2>
-                    <p>Saya yang bertanda tangan di bawah ini :</p>
-                    <table style="margin-top: 10px; border: none;">
-                        <tr><td style="border:none; width: 150px;">Nama</td><td style="border:none;">: <input type="text" name="ortu_nama_surat" class="save-trigger" style="display:inline; width: 70%; border-bottom: 1px dotted black;"></td></tr>
-                        <tr><td style="border:none;">Alamat</td><td style="border:none;">: <input type="text" name="ortu_alamat_surat" class="save-trigger" style="display:inline; width: 70%; border-bottom: 1px dotted black;"></td></tr>
-                        <tr><td style="border:none;">Nomor HP</td><td style="border:none;">: <input type="text" name="ortu_hp_surat" class="save-trigger" style="display:inline; width: 70%; border-bottom: 1px dotted black;"></td></tr>
-                    </table>
-                    <p>Sebagai Orang Tua / Wali dari :</p>
-                    <table style="border: none;">
-                        <tr><td style="border:none; width: 150px;">Nama Siswa</td><td style="border:none;">: <input type="text" name="siswa_nama" class="save-trigger" readonly style="display:inline; width: 70%; border-bottom: 1px dotted black;"></td></tr>
-                        <tr><td style="border:none;">Kelas</td><td style="border:none;">: <input type="text" name="siswa_kelas" class="save-trigger" readonly style="display:inline; width: 70%; border-bottom: 1px dotted black;"></td></tr>
-                        <tr><td style="border:none;">Sekolah</td><td style="border:none;">: SMK Negeri 4 Garut</td></tr>
-                    </table>
-                    <p>Menyatakan :</p>
-                    <ol style="margin-left: 20px;">
-                        <li>Mengizinkan anak saya mengikuti PKL Mulai <input type="date" name="pkl_mulai" class="save-trigger" style="display:inline-block; width: 130px;"> s.d <input type="date" name="pkl_selesai" class="save-trigger" style="display:inline-block; width: 130px;"> Program Keahlian <input type="text" name="prog_keahlian" class="save-trigger" style="display:inline-block; width: 200px;">.</li>
-                        <li>Bersedia menanggung resiko kecelakaan.</li>
-                        <li>Tidak akan menuntut secara hukum.</li>
-                    </ol>
-                    <div class="row">
-                        <div class="col signature-box" style="margin-top: 30px;">
-                            <p>Garut, <input type="date" name="tgl_surat_ortu" class="save-trigger" style="width: 130px; display: inline-block; border-bottom: 1px dotted #000;"></p>
-                            <p>Orang Tua / Wali</p>
-                            <div class="signature-space"></div>
-                            <p>( <input type="text" name="ortu_nama" class="save-trigger" style="text-align: center; border: none;"> )</p>
-                            <br><br><p style="font-size: 0.8rem; border: 1px solid #333; display: inline-block; padding: 5px;">Materai 10.000</p>
-                        </div>
-                    </div>
-                </div>
+<div id="editCkModal" class="modal-bg no-print"><div class="modal-box"><div class="flex items-center gap-2 mb-5"><i class="fas fa-edit text-accent text-lg"></i><h3 class="font-display font-bold text-lg">Edit Catatan Kegiatan</h3><button onclick="closeCkEditModal()" class="ml-auto text-gray-400 hover:text-gray-700"><i class="fas fa-times text-xl"></i></button></div><input type="hidden" id="editCkId"><div class="space-y-3"><div><label class="ck-label"><span>A.</span> Nama Pekerjaan</label><input type="text" id="editCkPekerjaan" class="fi"></div><div><label class="ck-label"><span>B.</span> Perencanaan Kegiatan</label><textarea id="editCkPerencanaan" class="fi" rows="3"></textarea></div><div><label class="ck-label"><span>C.</span> Pelaksanaan Kegiatan / Hasil</label><textarea id="editCkPelaksanaan" class="fi" rows="3"></textarea></div><div><label class="ck-label"><span>D.</span> Catatan Instruktur</label><textarea id="editCkCatatanIns" class="fi" rows="2"></textarea></div></div><div class="flex gap-3 mt-5"><button onclick="saveCkEdit()" class="btn btn-p flex-1 justify-center"><i class="fas fa-check"></i> Simpan</button><button onclick="closeCkEditModal()" class="btn btn-o flex-1 justify-center">Batal</button></div></div></div>
 
-                <div id="surat-siswa" class="tab-content">
-                    <h2 class="doc-subtitle" style="text-align: center;">SURAT PERNYATAAN PESERTA DIDIK</h2>
-                    <p>Saya yang bertanda tangan di bawah ini :</p>
-                    <table style="margin-top: 10px; border: none;">
-                        <tr><td style="border:none; width: 150px;">Nama Siswa</td><td style="border:none;">: <input type="text" name="siswa_nama" class="save-trigger" readonly style="display:inline; width: 70%; border-bottom: 1px dotted black;"></td></tr>
-                        <tr><td style="border:none;">Kelas</td><td style="border:none;">: <input type="text" name="siswa_kelas" class="save-trigger" readonly style="display:inline; width: 70%; border-bottom: 1px dotted black;"></td></tr>
-                        <tr><td style="border:none;">Sekolah</td><td style="border:none;">: SMK Negeri 4 Garut</td></tr>
-                        <tr><td style="border:none;">Tempat PKL</td><td style="border:none;">: <input type="text" name="dudika_nama" class="save-trigger" readonly style="display:inline; width: 70%; border-bottom: 1px dotted black;"></td></tr>
-                        <tr><td style="border:none;">Alamat PKL</td><td style="border:none;">: <input type="text" name="dudika_alamat" class="save-trigger" readonly style="display:inline; width: 70%; border-bottom: 1px dotted black;"></td></tr>
-                    </table>
-                    <p>Menyatakan :</p>
-                    <ol style="margin-left: 20px;">
-                        <li>Akan mentaati peraturan di tempat PKL.</li>
-                        <li>Siap mengikuti kegiatan sesuai jadwal.</li>
-                        <li>Siap dijatuhi sanksi apabila melanggar.</li>
-                    </ol>
-                    <div class="row">
-                        <div class="col signature-box" style="margin-top: 30px;">
-                            <p>Garut, <input type="date" name="tgl_surat_siswa" class="save-trigger" style="width: 130px; display: inline-block; border-bottom: 1px dotted #000;"></p>
-                            <p>Peserta PKL</p>
-                            <div class="signature-space"></div>
-                            <p>( <input type="text" name="siswa_nama" class="save-trigger" readonly style="text-align: center; border: none;"> )</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
+<div id="deleteModal" class="modal-bg no-print"><div class="modal-box" style="max-width:400px"><div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center"><i class="fas fa-exclamation-triangle text-red-600"></i></div><h3 class="font-display font-bold text-lg">Hapus Data?</h3></div><p class="text-gray-600 mb-5 text-sm">Data yang dihapus tidak dapat dikembalikan.</p><input type="hidden" id="deleteId"><input type="hidden" id="deleteType"><div class="flex gap-3 justify-end"><button onclick="closeDeleteModal()" class="btn btn-o btn-sm">Batal</button><button onclick="confirmDelete()" class="btn btn-d btn-sm"><i class="fas fa-trash-alt"></i> Hapus</button></div></div></div>
+<div id="resetModal" class="modal-bg no-print"><div class="modal-box" style="max-width:400px"><div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center"><i class="fas fa-exclamation-triangle text-red-600"></i></div><h3 class="font-display font-bold text-lg">Reset Semua Data?</h3></div><p class="text-gray-600 mb-5 text-sm">Semua data jurnal dan profil akan dihapus permanen.</p><div class="flex gap-3 justify-end"><button onclick="closeResetModal()" class="btn btn-o btn-sm">Batal</button><button onclick="confirmReset()" class="btn btn-d btn-sm"><i class="fas fa-trash-alt"></i> Ya, Reset</button></div></div></div>
 
-            <!-- 3. JURNAL KEGIATAN -->
-            <section id="jurnal" class="paper hidden">
-                <div class="tabs no-print"></div>
-                <div id="journal-months-container"></div>
-            </section>
+<!-- HIDDEN PDF RENDERING SECTION -->
+<div id="printSection"><div class="print-doc" id="printContent"></div></div>
 
-            <!-- 4. CATATAN KEGIATAN -->
-            <section id="catatan" class="paper hidden">
-                <div class="tabs no-print">
-                    <button class="tab-btn active" onclick="openTab(event, 'catatan-1')">Kegiatan 1</button>
-                    <button class="tab-btn" onclick="openTab(event, 'catatan-2')">Kegiatan 2</button>
-                    <button class="tab-btn" onclick="openTab(event, 'catatan-3')">Kegiatan 3</button>
-                </div>
-                <div id="catatan-template">
-                    <h3 class="section-title">CATATAN KEGIATAN PKL</h3>
-                    <table>
-                        <tr><td style="width: 200px;">Nama Peserta Didik</td><td>: <input type="text" name="siswa_nama" class="save-trigger" readonly style="display:inline-block; width: 80%; border:none;"></td></tr>
-                        <tr><td>Dunia Kerja Tempat PKL</td><td>: <input type="text" name="dudika_nama" class="save-trigger" readonly style="display:inline-block; width: 80%; border:none;"></td></tr>
-                        <tr><td>Nama Instruktur</td><td>: <input type="text" name="dudika_instruktur_catatan" class="save-trigger" style="display:inline-block; width: 80%; border:none;"></td></tr>
-                        <tr><td>Nama Guru Pembimbing</td><td>: <input type="text" name="guru_pembimbing_catatan" class="save-trigger" style="display:inline-block; width: 80%; border:none;"></td></tr>
-                    </table>
-                    <div style="margin-top: 20px;">
-                        <label>A. Nama Pekerjaan</label><textarea name="catatan_nama_pekerjaan" class="save-trigger" rows="2"></textarea>
-                        <label>B. Perencanaan Kegiatan</label><textarea name="catatan_rencana" class="save-trigger" rows="3"></textarea>
-                        <label>C. Pelaksanaan Kegiatan/ Hasil</label><textarea name="catatan_pelaksanaan" class="save-trigger" rows="5"></textarea>
-                        <label>D. Catatan Instruktur</label><textarea name="catatan_instruktur" class="save-trigger" rows="2"></textarea>
-                    </div>
-                    <div class="signature-box"><p>Tanda Tangan Instruktur</p><div class="signature-space"></div></div>
-                </div>
-            </section>
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzLoxmetak_qMqwddoJpPzOLSyGOs0jJuJ1pSRaF4irBUu0Sf0Ej6SN5yC3r2tZ0tNQ/exec';
+const HARI = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+let S = { nisn:'', profile:{nama:'',duniaKerja:'',instruktur:'',guru:''}, entries:[], catatanKegiatan:[], dokumentasi:[], filter:'all' };
+let syncTimeout = null;
 
-            <!-- 5. DOKUMENTASI -->
-            <section id="dokumentasi" class="paper hidden">
-                <h2 class="doc-subtitle">DOKUMENTASI KEGIATAN PKL</h2>
-                <div class="row">
-                    <div class="col col-half" style="border: 1px dashed #ccc; height: 300px; margin: 10px; display: flex; align-items: center; justify-content: center; position: relative;"><span>Foto 1</span><textarea placeholder="Keterangan:" class="save-trigger" style="position: absolute; bottom: 0; width: 100%; background: rgba(255,255,255,0.8); height: 60px;"></textarea></div>
-                    <div class="col col-half" style="border: 1px dashed #ccc; height: 300px; margin: 10px; display: flex; align-items: center; justify-content: center; position: relative;"><span>Foto 2</span><textarea placeholder="Keterangan:" class="save-trigger" style="position: absolute; bottom: 0; width: 100%; background: rgba(255,255,255,0.8); height: 60px;"></textarea></div>
-                    <div class="col col-half" style="border: 1px dashed #ccc; height: 300px; margin: 10px; display: flex; align-items: center; justify-content: center; position: relative;"><span>Foto 3</span><textarea placeholder="Keterangan:" class="save-trigger" style="position: absolute; bottom: 0; width: 100%; background: rgba(255,255,255,0.8); height: 60px;"></textarea></div>
-                    <div class="col col-half" style="border: 1px dashed #ccc; height: 300px; margin: 10px; display: flex; align-items: center; justify-content: center; position: relative;"><span>Foto 4</span><textarea placeholder="Keterangan:" class="save-trigger" style="position: absolute; bottom: 0; width: 100%; background: rgba(255,255,255,0.8); height: 60px;"></textarea></div>
-                </div>
-            </section>
+function showView(n){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));const e=document.getElementById(n+'View');if(e)e.classList.add('active')}
+function switchTab(t){document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));document.querySelector(`.tab-btn[onclick="switchTab('${t}')"]`).classList.add('active');document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.add('active');if(t==='catatan')renderCkProfile();}
 
-            <!-- 6. OBSERVASI -->
-            <section id="observasi" class="paper hidden">
-                <h3 class="section-title">LEMBAR OBSERVASI PKL</h3>
-                <table>
-                    <tr><td style="width: 200px;">Nama Peserta Didik</td><td>: <input type="text" name="siswa_nama" class="save-trigger" readonly style="display:inline-block; width: 80%; border:none;"></td></tr>
-                    <tr><td>Dunia Kerja Tempat PKL</td><td>: <input type="text" name="dudika_nama" class="save-trigger" readonly style="display:inline-block; width: 80%; border:none;"></td></tr>
-                    <tr><td>Nama Instruktur</td><td>: <input type="text" name="dudika_instruktur_obs" class="save-trigger" style="display:inline-block; width: 80%; border:none;"></td></tr>
-                    <tr><td>Nama Guru Pembimbing</td><td>: <input type="text" name="guru_pembimbing_obs" class="save-trigger" style="display:inline-block; width: 80%; border:none;"></td></tr>
-                </table>
-                <!-- Sederhanakan observasi untuk contoh -->
-                <p>Checklist observasi disimpan secara lokal di input ini:</p>
-                <textarea class="save-trigger" rows="5" placeholder="Isi detail observasi di sini..."></textarea>
-            </section>
+function handleLogin(){const n=document.getElementById('loginNisn').value.trim();if(!n){showToast('Masukkan NISN','error');return}if(!/^\d{6,10}$/.test(n)){showToast('NISN harus 6-10 digit angka','error');return}if(loadData(n)){showToast('Selamat datang, '+S.profile.nama+'!','success');enterDashboard()}else{showToast('NISN belum terdaftar','warning');document.getElementById('regNisn').value=n;showView('register')}}
+function handleRegister(){const n=document.getElementById('regNisn').value.trim(),nm=document.getElementById('regNama').value.trim(),dk=document.getElementById('regDuniaKerja').value.trim(),ins=document.getElementById('regInstruktur').value.trim(),g=document.getElementById('regGuru').value.trim();if(!n||!nm||!dk){showToast('NISN, Nama, dan Dunia Kerja wajib diisi','error');return}if(localStorage.getItem('pkl_'+n)){showToast('NISN sudah terdaftar','warning');showView('login');return}S={nisn:n,profile:{nama:nm,duniaKerja:dk,instruktur:ins,guru:g},entries:[],catatanKegiatan:[],dokumentasi:[],filter:'all'};saveData();showToast('Pendaftaran berhasil!','success');enterDashboard()}
+function handleLogout(){localStorage.removeItem('pkl_current');showView('login');document.getElementById('loginNisn').value='';showToast('Anda telah keluar','info')}
 
-            <!-- 7. DAFTAR NILAI -->
-            <section id="nilai" class="paper hidden">
-                <h2 class="doc-subtitle">DAFTAR NILAI PESERTA DIDIK PKL</h2>
-                <h3 class="doc-subtitle">SMK NEGERI 4 GARUT <br> TAHUN AJARAN 2024 / 2025</h3>
-                <table style="margin-bottom: 20px;">
-                    <tr><td style="width: 250px;">Nama Peserta Didik</td><td>: <input type="text" name="siswa_nama" class="save-trigger" readonly style="display:inline-block; width: 70%; border:none;"></td></tr>
-                    <tr><td>NISN</td><td>: <input type="text" name="siswa_nisn" class="save-trigger" style="display:inline-block; width: 70%; border:none;"></td></tr>
-                    <tr><td>Kelas / Program Keahlian</td><td>: <input type="text" name="siswa_kelas" class="save-trigger" readonly style="display:inline-block; width: 30%; border:none;"> / <input type="text" name="prog_keahlian" class="save-trigger" style="display:inline-block; width: 30%; border:none;"></td></tr>
-                </table>
-                <table>
-                    <thead><tr><th style="width: 30px;">No</th><th style="text-align: left;">Tujuan Pembelajaran</th><th style="width: 80px;">Skor</th><th style="text-align: left;">Deskripsi</th></tr></thead>
-                    <tbody>
-                        <tr><td style="text-align:center;">1</td><td>Menerapkan Soft Skills</td><td><input type="number" class="input-no-border save-trigger" style="text-align:center;"></td><td><input class="input-no-border save-trigger" type="text"></td></tr>
-                        <tr><td style="text-align:center;">2</td><td>Menerapkan norma, POS dan K3LH</td><td><input type="number" class="input-no-border save-trigger" style="text-align:center;"></td><td><input class="input-no-border save-trigger" type="text"></td></tr>
-                        <tr><td style="text-align:center;">3</td><td>Menerapkan Kompetensi Teknis</td><td><input type="number" class="input-no-border save-trigger" style="text-align:center;"></td><td><input class="input-no-border save-trigger" type="text"></td></tr>
-                        <tr><td style="text-align:center;">4</td><td>Memahami alur bisnis</td><td><input type="number" class="input-no-border save-trigger" style="text-align:center;"></td><td><input class="input-no-border save-trigger" type="text"></td></tr>
-                    </tbody>
-                </table>
-                <div class="signature-box"><p>Guru Pembimbing</p><div class="signature-space"></div></div>
-            </section>
+function enterDashboard(){localStorage.setItem('pkl_current',S.nisn);showView('dashboard');renderProfile();renderHistory();renderCatatanHistory();renderDokHistory();document.getElementById('navNisn').textContent='NISN: '+S.nisn;const t=new Date().toISOString().split('T')[0];document.getElementById('entTgl').value=t;document.getElementById('dokTgl').value=t;onDatePick();onDokDatePick()}
 
-        </main>
-    </div>
+let pOpen=true;function toggleProfile(){pOpen=!pOpen;document.getElementById('profileContent').style.display=pOpen?'block':'none';document.getElementById('profileArrow').style.transform=pOpen?'rotate(0)':'rotate(-90deg)'}
+function renderProfile(){document.getElementById('profileFields').innerHTML=`<div><label class="fl">Nama Lengkap</label><input type="text" id="pNamaInput" class="fi" value="${esc(S.profile.nama)}"></div><div><label class="fl">Dunia Kerja</label><input type="text" id="pDkInput" class="fi" value="${esc(S.profile.duniaKerja)}"></div><div><label class="fl">Instruktur</label><input type="text" id="pInsInput" class="fi" value="${esc(S.profile.instruktur)}"></div><div><label class="fl">Guru Pembimbing</label><input type="text" id="pGuruInput" class="fi" value="${esc(S.profile.guru)}"></div>`}
+function saveProfile(){S.profile.nama=document.getElementById('pNamaInput').value.trim();S.profile.duniaKerja=document.getElementById('pDkInput').value.trim();S.profile.instruktur=document.getElementById('pInsInput').value.trim();S.profile.guru=document.getElementById('pGuruInput').value.trim();saveData();showToast('Profil diperbarui','success')}
 
-    <!-- TOAST -->
-    <div id="toast">Data tersimpan!</div>
+// == JURNAL ==
+function onDatePick(){const v=document.getElementById('entTgl').value;document.getElementById('entHari').textContent=v?HARI[new Date(v).getDay()]:''}
+function addEntry(){const tgl=document.getElementById('entTgl').value,k=document.getElementById('entKehadiran').value,u=document.getElementById('entUnit').value.trim(),c=document.getElementById('entCatatan').value.trim();if(!tgl||!k){showToast('Tanggal & Kehadiran wajib diisi','error');return}S.entries.push({id:'e_'+Date.now()+'_'+Math.random().toString(36).substr(2,5),tanggal:tgl,hari:HARI[new Date(tgl).getDay()],unitKerja:u,catatan:c,kehadiran:k,createdAt:new Date().toISOString()});S.entries.sort((a,b)=>a.tanggal.localeCompare(b.tanggal));saveData();renderHistory();document.getElementById('entKehadiran').value='';document.getElementById('entUnit').value='';document.getElementById('entCatatan').value='';showToast('Entri jurnal disimpan','success')}
+function openEditModal(id){const e=S.entries.find(x=>x.id===id);if(!e)return;document.getElementById('editId').value=id;document.getElementById('editTgl').value=e.tanggal;document.getElementById('editKehadiran').value=e.kehadiran;document.getElementById('editUnit').value=e.unitKerja;document.getElementById('editCatatan').value=e.catatan;onEditDatePick();document.getElementById('editModal').classList.add('open')}
+function onEditDatePick(){const v=document.getElementById('editTgl').value;document.getElementById('editHari').textContent=v?HARI[new Date(v).getDay()]:''}
+function closeEditModal(){document.getElementById('editModal').classList.remove('open')}
+function saveEdit(){const id=document.getElementById('editId').value,idx=S.entries.findIndex(x=>x.id===id);if(idx===-1)return;const tgl=document.getElementById('editTgl').value;if(!tgl){showToast('Tanggal wajib','error');return}S.entries[idx].tanggal=tgl;S.entries[idx].hari=HARI[new Date(tgl).getDay()];S.entries[idx].kehadiran=document.getElementById('editKehadiran').value;S.entries[idx].unitKerja=document.getElementById('editUnit').value.trim();S.entries[idx].catatan=document.getElementById('editCatatan').value.trim();S.entries.sort((a,b)=>a.tanggal.localeCompare(b.tanggal));saveData();renderHistory();closeEditModal();showToast('Entri diperbarui','success')}
+function setFilter(f){S.filter=f;document.querySelectorAll('.filter-btn').forEach(b=>{b.classList.remove('active-filter');b.style.fontWeight='600'});const a=document.querySelector(`.filter-btn[data-f="${f}"]`);if(a){a.classList.add('active-filter');a.style.fontWeight='800'}renderHistory()}
+function renderHistory(){const l=document.getElementById('historyList'),f=S.filter==='all'?S.entries:S.entries.filter(e=>e.kehadiran===S.filter);document.getElementById('entryCount').textContent=f.length+' entri';if(f.length===0){l.innerHTML=`<div class="empty-state"><i class="fas fa-book-open block"></i><p class="font-semibold">Belum ada entri jurnal</p></div>`;return}l.innerHTML=[...f].reverse().map(e=>`<div class="entry-card ${e.kehadiran.toLowerCase()}"><div class="flex items-start justify-between gap-3"><div class="flex-1 min-w-0"><div class="flex items-center gap-2 flex-wrap mb-1"><span class="font-bold text-primary text-sm">${e.hari}, ${fmtDate(e.tanggal)}</span><span class="att-badge ${e.kehadiran.toLowerCase()}">${e.kehadiran}</span></div>${e.unitKerja?`<p class="text-sm text-gray-700 mb-1"><i class="fas fa-briefcase text-xs text-gray-400 mr-1"></i>${esc(e.unitKerja)}</p>`:''}${e.catatan?`<p class="text-xs text-gray-500"><i class="fas fa-sticky-note text-xs text-gray-300 mr-1"></i>${esc(e.catatan)}</p>`:''}</div><div class="flex gap-1 flex-shrink-0 no-print"><button onclick="openEditModal('${e.id}')" class="btn-icon bg-cream hover:bg-cream-dark text-primary" title="Edit"><i class="fas fa-pen text-xs"></i></button><button onclick="openDeleteModal('${e.id}','jurnal')" class="btn-icon bg-red-50 hover:bg-red-100 text-red-600" title="Hapus"><i class="fas fa-trash text-xs"></i></button></div></div></div>`).join('')}
 
-    <!-- Link ke Script JS -->
-    <script src="script.js"></script>
+// == CATATAN KEGIATAN ==
+function renderCkProfile(){document.getElementById('ckNama').textContent=S.profile.nama||'-';document.getElementById('ckDuniaKerja').textContent=S.profile.duniaKerja||'-';document.getElementById('ckInstruktur').textContent=S.profile.instruktur||'-';document.getElementById('ckGuru').textContent=S.profile.guru||'-'}
+function addCatatan(){const p=document.getElementById('ckPekerjaan').value.trim(),r=document.getElementById('ckPerencanaan').value.trim(),l=document.getElementById('ckPelaksanaan').value.trim(),c=document.getElementById('ckCatatanIns').value.trim();if(!p){showToast('Nama Pekerjaan wajib diisi','error');return}S.catatanKegiatan.push({id:'ck_'+Date.now()+'_'+Math.random().toString(36).substr(2,5),pekerjaan:p,perencanaan:r,pelaksanaan:l,catatanInstruktur:c,createdAt:new Date().toISOString()});saveData();renderCatatanHistory();document.getElementById('ckPekerjaan').value='';document.getElementById('ckPerencanaan').value='';document.getElementById('ckPelaksanaan').value='';document.getElementById('ckCatatanIns').value='';showToast('Catatan kegiatan disimpan','success')}
+function openCkEditModal(id){const e=S.catatanKegiatan.find(x=>x.id===id);if(!e)return;document.getElementById('editCkId').value=id;document.getElementById('editCkPekerjaan').value=e.pekerjaan;document.getElementById('editCkPerencanaan').value=e.perencanaan;document.getElementById('editCkPelaksanaan').value=e.pelaksanaan;document.getElementById('editCkCatatanIns').value=e.catatanInstruktur;document.getElementById('editCkModal').classList.add('open')}
+function closeCkEditModal(){document.getElementById('editCkModal').classList.remove('open')}
+function saveCkEdit(){const id=document.getElementById('editCkId').value,idx=S.catatanKegiatan.findIndex(x=>x.id===id);if(idx===-1)return;S.catatanKegiatan[idx].pekerjaan=document.getElementById('editCkPekerjaan').value.trim();S.catatanKegiatan[idx].perencanaan=document.getElementById('editCkPerencanaan').value.trim();S.catatanKegiatan[idx].pelaksanaan=document.getElementById('editCkPelaksanaan').value.trim();S.catatanKegiatan[idx].catatanInstruktur=document.getElementById('editCkCatatanIns').value.trim();saveData();renderCatatanHistory();closeCkEditModal();showToast('Catatan diperbarui','success')}
+function renderCatatanHistory(){const l=document.getElementById('catatanHistoryList');if(S.catatanKegiatan.length===0){l.innerHTML=`<div class="empty-state"><i class="fas fa-file-alt block"></i><p class="font-semibold">Belum ada catatan kegiatan</p></div>`;return}l.innerHTML=[...S.catatanKegiatan].reverse().map(e=>`<div class="entry-card" style="border-left-color:var(--accent)"><div class="flex items-start justify-between gap-3"><div class="flex-1 min-w-0"><div class="font-bold text-primary mb-2"><i class="fas fa-hammer text-accent mr-1"></i>${esc(e.pekerjaan)}</div><div class="text-sm space-y-1 ml-4 border-l-2 border-cream-dark pl-3"><p><span class="font-semibold text-primary">B. Perencanaan:</span> <span class="text-gray-600">${esc(e.perencanaan)||'-'}</span></p><p><span class="font-semibold text-primary">C. Pelaksanaan:</span> <span class="text-gray-600">${esc(e.pelaksanaan)||'-'}</span></p><p><span class="font-semibold text-primary">D. Catatan Ins.:</span> <span class="text-gray-600 italic">${esc(e.catatanInstruktur)||'-'}</span></p></div></div><div class="flex gap-1 flex-shrink-0 no-print"><button onclick="openCkEditModal('${e.id}')" class="btn-icon bg-cream hover:bg-cream-dark text-primary" title="Edit"><i class="fas fa-pen text-xs"></i></button><button onclick="openDeleteModal('${e.id}','catatan')" class="btn-icon bg-red-50 hover:bg-red-100 text-red-600" title="Hapus"><i class="fas fa-trash text-xs"></i></button></div></div></div>`).join('')}
+
+// == DOKUMENTASI KEGIATAN ==
+function onDokDatePick(){const v=document.getElementById('dokTgl').value;document.getElementById('dokHari').textContent=v?HARI[new Date(v).getDay()]:''}
+function previewDokImage(input){if(input.files&&input.files[0]){const reader=new FileReader();reader.onload=function(e){const prev=document.getElementById('dokPreview');prev.src=e.target.result;prev.classList.remove('hidden');document.getElementById('uploadArea').classList.add('has-file')};reader.readAsDataURL(input.files[0])}}
+function compressImage(file){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=e=>{const img=new Image();img.onload=()=>{const canvas=document.createElement('canvas');const MAX_WIDTH=800;let width=img.width;let height=img.height;if(width>MAX_WIDTH){height=Math.round((height*MAX_WIDTH)/width);width=MAX_WIDTH}canvas.width=width;canvas.height=height;const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0,width,height);resolve(canvas.toDataURL('image/jpeg',0.6))};img.onerror=reject;img.src=e.target.result};reader.onerror=reject;reader.readAsDataURL(file)})}
+async function addDokumentasi(){const fileInput=document.getElementById('dokFile');if(!fileInput.files||!fileInput.files[0]){showToast('Upload foto wajib dilakukan','error');return}const tgl=document.getElementById('dokTgl').value,ket=document.getElementById('dokKet').value.trim();if(!tgl){showToast('Tanggal wajib diisi','error');return}showToast('Mengompres & menyimpan foto...','info');try{const base64=await compressImage(fileInput.files[0]);S.dokumentasi.push({id:'dok_'+Date.now()+'_'+Math.random().toString(36).substr(2,5),tanggal:tgl,hari:HARI[new Date(tgl).getDay()],keterangan:ket,foto:base64,createdAt:new Date().toISOString()});S.dokumentasi.sort((a,b)=>a.tanggal.localeCompare(b.tanggal));saveData();renderDokHistory();document.getElementById('dokFile').value='';document.getElementById('dokKet').value='';document.getElementById('dokPreview').classList.add('hidden');document.getElementById('dokPreview').src='';document.getElementById('uploadArea').classList.remove('has-file');showToast('Dokumentasi disimpan','success')}catch(err){showToast('Gagal memproses gambar','error')}}
+function renderDokHistory(){const l=document.getElementById('dokHistoryList');document.getElementById('dokCount').textContent=S.dokumentasi.length+' foto';if(S.dokumentasi.length===0){l.innerHTML=`<div class="empty-state col-span-3"><i class="fas fa-camera-retro block"></i><p class="font-semibold">Belum ada dokumentasi</p></div>`;return}l.innerHTML=[...S.dokumentasi].reverse().map(e=>`<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden group relative"><img src="${e.foto}" alt="Dok" class="w-full h-40 object-cover"><div class="p-3"><p class="font-bold text-primary text-sm">${e.hari}, ${fmtDate(e.tanggal)}</p><p class="text-xs text-gray-500 mt-1 line-clamp-2">${esc(e.keterangan)||'Tanpa keterangan'}</p></div><div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity no-print"><button onclick="openDeleteModal('${e.id}','dokumentasi')" class="btn-icon bg-red-500 text-white shadow-lg" title="Hapus"><i class="fas fa-trash text-xs"></i></button></div></div>`).join('')}
+
+// == DELETE UNIVERSAL ==
+function openDeleteModal(id,type){document.getElementById('deleteId').value=id;document.getElementById('deleteType').value=type;document.getElementById('deleteModal').classList.add('open')}
+function closeDeleteModal(){document.getElementById('deleteModal').classList.remove('open')}
+function confirmDelete(){const id=document.getElementById('deleteId').value,type=document.getElementById('deleteType').value;if(type==='jurnal')S.entries=S.entries.filter(e=>e.id!==id);else if(type==='catatan')S.catatanKegiatan=S.catatanKegiatan.filter(e=>e.id!==id);else if(type==='dokumentasi')S.dokumentasi=S.dokumentasi.filter(e=>e.id!==id);saveData();renderHistory();renderCatatanHistory();renderDokHistory();closeDeleteModal();showToast('Data dihapus','info')}
+
+// == AUTO-SYNC (Tanpa Foto Base64 agar tidak error limit Sheets) ==
+function triggerAutoSync(){if(GAS_URL==='PASTE_URL_WEB_APP_ANDA_DISINI')return;clearTimeout(syncTimeout);document.getElementById('syncStatus').innerHTML='<span class="sync-dot" style="background:#D97706"></span><span>Menyinkronkan...</span>';syncTimeout=setTimeout(async()=>{try{await fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'sync_all',nisn:S.nisn,profile:S.profile,entries:S.entries.map(e=>({id:e.id,tanggal:e.tanggal,hari:e.hari,unitKerja:e.unitKerja,catatan:e.catatan,kehadiran:e.kehadiran,createdAt:e.createdAt})),catatanKegiatan:S.catatanKegiatan.map(c=>({id:c.id,pekerjaan:c.pekerjaan,perencanaan:c.perencanaan,pelaksanaan:c.pelaksanaan,catatanInstruktur:c.catatanInstruktur,createdAt:c.createdAt})),dokumentasi:S.dokumentasi.map(d=>({id:d.id,tanggal:d.tanggal,hari:d.hari,keterangan:d.keterangan,createdAt:d.createdAt})) // Base64 sengaja tidak dikirim ke Sheets
+})});document.getElementById('syncStatus').innerHTML='<span class="sync-dot" style="background:#059669"></span><span>Tersinkron</span>'}catch(err){document.getElementById('syncStatus').innerHTML='<span class="sync-dot" style="background:#DC2626"></span><span>Gagal</span>'}},3000)}
+
+// == PRECISE PDF GENERATOR ==
+async function downloadFullReport() {
+    if(S.entries.length===0 && S.catatanKegiatan.length===0 && S.dokumentasi.length===0){showToast('Tidak ada data untuk diunduh','warning');return}
+    const c={Hadir:0,Izin:0,Sakit:0,Bolos:0};S.entries.forEach(e=>{if(c.hasOwnProperty(e.kehadiran))c[e.kehadiran]++});
+
+    let html = `
+    <h1>JURNAL KEGIATAN PKL</h1>
+    <div class="pf">Nama Peserta Didik : <span>${esc(S.profile.nama)||''}</span></div>
+    <div class="pf">Dunia Kerja Tempat PKL : <span>${esc(S.profile.duniaKerja)||''}</span></div>
+    <div class="pf">Nama Instruktur : <span>${esc(S.profile.instruktur)||''}</span></div>
+    <div class="pf">Nama Guru Pembimbing : <span>${esc(S.profile.guru)||''}</span></div>
+    <br>
+    <table>
+        <thead><tr><th style="width:40px">No.</th><th style="width:140px">Hari/Tanggal</th><th>Unit Kerja/Pekerjaan</th><th class="catatan-col">Catatan*</th></tr></thead>
+        <tbody>${S.entries.map((e,i)=>`<tr><td style="text-align:center">${i+1}</td><td>${e.hari}, ${fmtDate(e.tanggal)}</td><td>${esc(e.unitKerja)||''}</td><td>${esc(e.catatan)||''}</td></tr>`).join('')}</tbody>
+    </table>
+    <div class="rk">Rekapitulasi Kehadiran</div>
+    <div class="ri">1. Hadir : ${c.Hadir} hari</div>
+    <div class="ri">2. Izin : ${c.Izin} hari</div>
+    <div class="ri">3. Sakit : ${c.Sakit} hari</div>
+    <div class="ri">4. Bolos : ${c.Bolos} hari</div>
+    <br>
+    <div class="sign-section"><div class="sign-label">Mengetahui,</div><div class="sign-label" style="font-weight:400">Instruktur / Pembimbing</div><div class="sign-space"></div><div class="sign-name">${esc(S.profile.instruktur)||'...........................'}</div></div>
+    <div style="clear:both"></div>
+
+    ${S.catatanKegiatan.length > 0 ? `<div class="page-break"></div><h1>CATATAN KEGIATAN PKL</h1><div class="pf">Nama Peserta Didik : <span>${esc(S.profile.nama)||''}</span></div><div class="pf">Dunia Kerja Tempat PKL : <span>${esc(S.profile.duniaKerja)||''}</span></div><div class="pf">Nama Instruktur : <span>${esc(S.profile.instruktur)||''}</span></div><div class="pf">Nama Guru Pembimbing : <span>${esc(S.profile.guru)||''}</span></div><br>${S.catatanKegiatan.map(ck=>`<div class="ck-sec"><div class="ck-lbl">A. Nama Pekerjaan</div><div class="ck-val">${esc(ck.pekerjaan)||''}</div></div><div class="ck-sec"><div class="ck-lbl">B. Perencanaan Kegiatan</div><div class="ck-val">${esc(ck.perencanaan)||''}</div></div><div class="ck-sec"><div class="ck-lbl">C. Pelaksanaan Kegiatan / Hasil</div><div class="ck-val">${esc(ck.pelaksanaan)||''}</div></div><div class="ck-sec"><div class="ck-lbl">D. Catatan Instruktur</div><div class="ck-val">${esc(ck.catatanInstruktur)||''}</div></div>`).join('<hr style="border:0; border-top:1px dashed #000; margin:20px 0;">')}` : ''}
+
+    ${S.dokumentasi.length > 0 ? `<div class="page-break"></div><h1>DOKUMENTASI KEGIATAN PKL</h1><div class="pf">Nama Peserta Didik : <span>${esc(S.profile.nama)||''}</span></div><div class="pf">Dunia Kerja Tempat PKL : <span>${esc(S.profile.duniaKerja)||''}</span></div><div class="pf">Nama Instruktur : <span>${esc(S.profile.instruktur)||''}</span></div><div class="pf">Nama Guru Pembimbing : <span>${esc(S.profile.guru)||''}</span></div><br><div class="dok-grid">${S.dokumentasi.map(d=>`<div class="dok-item"><img src="${d.foto}"><p>${d.hari}, ${fmtDate(d.tanggal)}<br>${esc(d.keterangan)||''}</p></div>`).join('')}</div>` : ''}
+    `;
+
+    const printSec = document.getElementById('printSection');
+    const printEl = document.getElementById('printContent');
+    printEl.innerHTML = html;
+    printSec.classList.add('rendering');
+
+    const btn = document.getElementById('btnDownload');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses PDF...';
+    showToast('Sedang membuat PDF, mohon tunggu...', 'info');
+
+    const opt = {
+        margin:       [20, 20, 20, 25],
+        filename:     'Laporan_PKL_' + (S.profile.nama || S.nisn).replace(/\s+/g, '_') + '.pdf',
+        image:        { type: 'jpeg', quality: 0.95 },
+        html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+    };
+
+    try {
+        await html2pdf().set(opt).from(printEl).save();
+        showToast('PDF berhasil diunduh!', 'success');
+    } catch (err) {
+        showToast('Gagal membuat PDF: ' + err.message, 'error');
+    } finally {
+        printSec.classList.remove('rendering');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-download"></i> Download Laporan Lengkap';
+    }
+}
+
+// == RESET ==
+function openResetModal(){document.getElementById('resetModal').classList.add('open')}
+function closeResetModal(){document.getElementById('resetModal').classList.remove('open')}
+function confirmReset(){localStorage.removeItem('pkl_'+S.nisn);localStorage.removeItem('pkl_current');S={nisn:'',profile:{nama:'',duniaKerja:'',instruktur:'',guru:''},entries:[],catatanKegiatan:[],dokumentasi:[],filter:'all'};closeResetModal();showView('login');showToast('Data berhasil direset','info')}
+
+// == STORAGE ==
+function saveData(){localStorage.setItem('pkl_'+S.nisn,JSON.stringify(S));localStorage.setItem('pkl_current',S.nisn);triggerAutoSync();}
+function loadData(n){const r=localStorage.getItem('pkl_'+n);if(r){S=JSON.parse(r);if(!S.catatanKegiatan)S.catatanKegiatan=[];if(!S.dokumentasi)S.dokumentasi=[];if(!S.filter)S.filter='all';return true}return false}
+
+// == UTILS ==
+function fmtDate(d){if(!d)return'';const o=new Date(d);return o.getDate()+' '+BULAN[o.getMonth()]+' '+o.getFullYear()}
+function esc(t){if(!t)return'';const m={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'};return t.replace(/[&<>"']/g,c=>m[c])}
+function showToast(msg,type='info'){const w=document.getElementById('toastWrap'),icons={success:'check-circle',error:'exclamation-circle',warning:'exclamation-triangle',info:'info-circle'},t=document.createElement('div');t.className='toast toast-'+type;t.innerHTML=`<i class="fas fa-${icons[type]||'info-circle'}"></i><span>${msg}</span>`;w.appendChild(t);requestAnimationFrame(()=>t.classList.add('show'));setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),350)},3500)}
+
+document.addEventListener('DOMContentLoaded',()=>{const c=localStorage.getItem('pkl_current');if(c&&loadData(c))enterDashboard()});
+</script>
 </body>
 </html>
