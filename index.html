@@ -1,122 +1,287 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistem Jurnal PKL</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jurnal Digital PKL SMK Negeri 4 Garut</title>
+    
+    <!-- Link ke Style CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- HALAMAN LOGIN -->
-  <div id="login-page" class="container">
-    <div class="card">
-      <h2 class="title">Login Siswa</h2>
-      <p class="subtitle">Gunakan NIS: 12345 (untuk tes)</p>
-      
-      <div class="form-group">
-        <label>Masukkan NIS</label>
-        <input type="number" id="nis" placeholder="Contoh: 12345">
-      </div>
-      
-      <button onclick="handleLogin()" class="btn-primary">Masuk</button>
-      <div id="login-msg" class="msg"></div>
-    </div>
-  </div>
-
-  <!-- HALAMAN DASHBOARD -->
-  <div id="dashboard-page" class="container hidden">
-    <div class="header">
-      <div class="user-info">
-        <span id="nama-siswa">Nama Siswa</span> | 
-        <span id="kelas-siswa">Kelas</span>
-      </div>
-      <button onclick="handleLogout()" class="btn-secondary">Keluar</button>
-    </div>
-
-    <div class="nav">
-      <div class="nav-item active" onclick="openTab('jurnal')">Jurnal</div>
-      <div class="nav-item" onclick="openTab('catatan')">Catatan</div>
-      <div class="nav-item" onclick="openTab('foto')">Dokumentasi</div>
-    </div>
-
-    <!-- TAB JURNAL -->
-    <div id="tab-jurnal" class="tab-content">
-      <div class="card">
-        <h3>Isi Jurnal Harian</h3>
-        <div class="form-group"><label>Tanggal</label><input type="date" id="j-tgl"></div>
-        
-        <div class="form-group">
-          <label>Kehadiran</label>
-          <select id="j-hadir">
-            <option value="Hadir">Hadir</option>
-            <option value="Izin">Izin</option>
-            <option value="Sakit">Sakit</option>
-            <option value="Alpha">Alpha</option>
-          </select>
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen">
+        <div class="login-card">
+            <div style="margin-bottom: 20px; font-weight: bold; font-size: 1.2rem;">
+                E-JURNAL PKL<br>SMK Negeri 4 Garut
+            </div>
+            <form id="login-form">
+                <input type="number" id="nis-input" placeholder="Masukkan NIS Anda" required>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Masuk</button>
+            </form>
         </div>
-
-        <div class="form-group"><label>Unit Kerja</label><input type="text" id="j-unit" placeholder="Contoh: Admin / Teknisi"></div>
-        <div class="form-group"><label>Catatan Kegiatan</label><textarea id="j-catatan" rows="3" placeholder="Deskripsi pekerjaan hari ini..."></textarea></div>
-        
-        <button onclick="saveJurnal()" class="btn-primary">Simpan Jurnal</button>
-        <div id="j-msg" class="msg"></div>
-      </div>
-      
-      <div class="card">
-        <h3>Riwayat Jurnal</h3>
-        <div class="table-responsive">
-          <table id="tabel-jurnal">
-            <thead><tr><th>Tanggal</th><th>Status</th><th>Unit</th><th>Catatan</th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
     </div>
 
-    <!-- TAB CATATAN -->
-    <div id="tab-catatan" class="tab-content hidden">
-      <div class="card">
-        <h3>Input Catatan Kegiatan</h3>
-        <div class="form-group"><label>Tanggal</label><input type="date" id="c-tgl"></div>
-        <div class="form-group"><label>Nama Pekerjaan</label><input type="text" id="c-kerja" placeholder="Proyek / Tugas"></div>
-        <div class="form-group"><label>Perencanaan</label><textarea id="c-plan" rows="2" placeholder="Rencana kerja..."></textarea></div>
-        <div class="form-group"><label>Pelaksanaan</label><textarea id="c-do" rows="2" placeholder="Hasil pelaksanaan..."></textarea></div>
+    <!-- MAIN APP -->
+    <div id="app-container" class="hidden">
         
-        <button onclick="saveCatatan()" class="btn-primary">Simpan Catatan</button>
-        <div id="c-msg" class="msg"></div>
-      </div>
+        <!-- SIDEBAR -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h3>SMKN 4 GARUT</h3>
+                <p id="user-display" style="font-size: 0.8rem;">Siswa</p>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#" onclick="showSection('identitas')" class="active">1. Identitas</a></li>
+                <li><a href="#" onclick="showSection('surat')">2. Surat Pernyataan</a></li>
+                <li><a href="#" onclick="showSection('jurnal')">3. Jurnal Harian</a></li>
+                <li><a href="#" onclick="showSection('catatan')">4. Catatan Kegiatan</a></li>
+                <li><a href="#" onclick="showSection('dokumentasi')">5. Dokumentasi</a></li>
+                <li><a href="#" onclick="showSection('observasi')">6. Observasi</a></li>
+                <li><a href="#" onclick="showSection('nilai')">7. Daftar Nilai</a></li>
+                <li style="margin-top: 20px;">
+                    <button onclick="window.print()" class="btn btn-primary" style="width: 90%; margin-left: 5%;">Cetak PDF</button>
+                </li>
+                <li>
+                    <button onclick="logout()" class="btn btn-outline" style="width: 90%; margin-left: 5%; margin-top: 10px; border-color: #dc3545; color: #dc3545;">Keluar</button>
+                </li>
+            </ul>
+        </nav>
 
-      <div class="card">
-        <h3>Riwayat Catatan</h3>
-        <div class="table-responsive">
-          <table id="tabel-catatan">
-            <thead><tr><th>Tanggal</th><th>Pekerjaan</th><th>Hasil</th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
+        <!-- CONTENT -->
+        <main class="main-content">
+            
+            <!-- 1. IDENTITAS -->
+            <section id="identitas" class="paper">
+                <h1 class="doc-title">JURNAL PRAKTIK KERJA LAPANGAN (PKL)</h1>
+                <h2 class="doc-subtitle">SMK NEGERI 4 GARUT <br> TAHUN 2026</h2>
+                
+                <span class="section-title">IDENTITAS DUNIA USAHA/INDUSTRI/KERJA (DUDIKA)</span>
+
+                <h3 style="margin-top: 20px;">1. IDENTITAS DUNIA DUDIKA</h3>
+                <div class="row">
+                    <div class="col col-half"><label>a. Nama DUDIKA</label><input type="text" name="dudika_nama" class="save-trigger"></div>
+                    <div class="col col-half"><label>b. Bidang Usaha</label><input type="text" name="dudika_bidang" class="save-trigger"></div>
+                </div>
+                <div class="row">
+                    <div class="col"><label>c. Alamat</label><input type="text" name="dudika_alamat" class="save-trigger"></div>
+                </div>
+                <div class="row">
+                    <div class="col col-half"><label>d. No. Telp / Fax</label><input type="text" name="dudika_telp" class="save-trigger"></div>
+                    <div class="col col-half"><label>e. Nama Pimpinan</label><input type="text" name="dudika_pimpinan" class="save-trigger"></div>
+                </div>
+                <div class="row">
+                    <div class="col"><label>f. Nama Pembimbing</label><input type="text" name="dudika_pembimbing" class="save-trigger"></div>
+                </div>
+
+                <h3 style="margin-top: 30px;">2. IDENTITAS SISWA</h3>
+                <div class="row" style="align-items: flex-start;">
+                    <div class="col" style="flex: 0 0 150px;">
+                        <div class="photo-box" id="photo-placeholder">3x4 cm<br>Bg Merah</div>
+                        <div class="no-print">
+                            <button class="btn btn-outline" style="font-size: 0.7rem; width: 100%;" onclick="document.getElementById('file-photo').click()">Upload Foto</button>
+                            <input type="file" id="file-photo" accept="image/*" class="hidden" onchange="previewImage(event)">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="row">
+                            <div class="col col-half"><label>a. Nama Lengkap</label><input type="text" name="siswa_nama" class="save-trigger" style="text-transform: uppercase;"></div>
+                            <div class="col col-half">
+                                <label>b. NIS / Kelas</label>
+                                <div style="display: flex; gap: 10px;">
+                                    <input type="text" name="siswa_nis" id="siswa_nis_display" class="save-trigger" readonly>
+                                    <input type="text" name="siswa_kelas" class="save-trigger" placeholder="Kelas">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-half"><label>c. Tempat Tgl Lahir</label><input type="text" name="siswa_ttl" class="save-trigger"></div>
+                            <div class="col col-half">
+                                <label>d. Golongan Darah</label>
+                                <select name="siswa_goldar" class="save-trigger" style="width: 100%; padding: 8px; border-bottom: 1px dotted #999;">
+                                    <option value="">- Pilih -</option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="AB">AB</option>
+                                    <option value="O">O</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row"><div class="col"><label>e. Sekolah</label><input type="text" value="SMK Negeri 4 Garut" readonly style="font-weight: bold;"></div></div>
+                        <div class="row"><div class="col"><label>f. Alamat</label><input type="text" value="Jln. Raya Karangpawitan" readonly></div></div>
+                        <div class="row">
+                            <div class="col col-half"><label>g. No. Telp Sekolah</label><input type="text" value="0262 – 444305" readonly></div>
+                            <div class="col col-half"><label>h. Nama Orang Tua</label><input type="text" name="ortu_nama" class="save-trigger"></div>
+                        </div>
+                        <div class="row"><div class="col"><label>i. Alamat Orang Tua</label><input type="text" name="ortu_alamat" class="save-trigger"></div></div>
+                        <div class="row"><div class="col"><label>j. No. Telp Orang Tua</label><input type="text" name="ortu_telp" class="save-trigger"></div></div>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-top: 50px;">
+                    <div class="col signature-box">
+                        <p>Garut, <input type="date" name="tgl_dudika_sign" class="save-trigger" style="width: 130px; display: inline-block; border-bottom: 1px dotted #000;"></p>
+                        <p style="margin-top: 10px;">Pimpinan DUDIKA</p>
+                        <div class="signature-space"></div>
+                        <p>( <input type="text" name="dudika_pimpinan" class="save-trigger" style="text-align: center; border: none;"> )</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px; font-size: 0.8rem; border-top: 1px solid #ccc; padding-top: 10px;">
+                    Keterangan:<br>• Diisi dengan huruf Kapital<br>• Stempel agar dikenakan pada sebagian foto siswa
+                </div>
+            </section>
+
+            <!-- 2. SURAT PERNYATAAN -->
+            <section id="surat" class="paper hidden">
+                <div class="tabs no-print">
+                    <button class="tab-btn active" onclick="openTab(event, 'surat-ortu')">Orang Tua</button>
+                    <button class="tab-btn" onclick="openTab(event, 'surat-siswa')">Peserta Didik</button>
+                </div>
+
+                <div id="surat-ortu" class="tab-content active">
+                    <h2 class="doc-subtitle" style="text-align: center;">SURAT PERNYATAAN ORANG TUA</h2>
+                    <p>Saya yang bertanda tangan di bawah ini :</p>
+                    <table style="margin-top: 10px; border: none;">
+                        <tr><td style="border:none; width: 150px;">Nama</td><td style="border:none;">: <input type="text" name="ortu_nama_surat" class="save-trigger" style="display:inline; width: 70%; border-bottom: 1px dotted black;"></td></tr>
+                        <tr><td style="border:none;">Alamat</td><td style="border:none;">: <input type="text" name="ortu_alamat_surat" class="save-trigger" style="display:inline; width: 70%; border-bottom: 1px dotted black;"></td></tr>
+                        <tr><td style="border:none;">Nomor HP</td><td style="border:none;">: <input type="text" name="ortu_hp_surat" class="save-trigger" style="display:inline; width: 70%; border-bottom: 1px dotted black;"></td></tr>
+                    </table>
+                    <p>Sebagai Orang Tua / Wali dari :</p>
+                    <table style="border: none;">
+                        <tr><td style="border:none; width: 150px;">Nama Siswa</td><td style="border:none;">: <input type="text" name="siswa_nama" class="save-trigger" readonly style="display:inline; width: 70%; border-bottom: 1px dotted black;"></td></tr>
+                        <tr><td style="border:none;">Kelas</td><td style="border:none;">: <input type="text" name="siswa_kelas" class="save-trigger" readonly style="display:inline; width: 70%; border-bottom: 1px dotted black;"></td></tr>
+                        <tr><td style="border:none;">Sekolah</td><td style="border:none;">: SMK Negeri 4 Garut</td></tr>
+                    </table>
+                    <p>Menyatakan :</p>
+                    <ol style="margin-left: 20px;">
+                        <li>Mengizinkan anak saya mengikuti PKL Mulai <input type="date" name="pkl_mulai" class="save-trigger" style="display:inline-block; width: 130px;"> s.d <input type="date" name="pkl_selesai" class="save-trigger" style="display:inline-block; width: 130px;"> Program Keahlian <input type="text" name="prog_keahlian" class="save-trigger" style="display:inline-block; width: 200px;">.</li>
+                        <li>Bersedia menanggung resiko kecelakaan.</li>
+                        <li>Tidak akan menuntut secara hukum.</li>
+                    </ol>
+                    <div class="row">
+                        <div class="col signature-box" style="margin-top: 30px;">
+                            <p>Garut, <input type="date" name="tgl_surat_ortu" class="save-trigger" style="width: 130px; display: inline-block; border-bottom: 1px dotted #000;"></p>
+                            <p>Orang Tua / Wali</p>
+                            <div class="signature-space"></div>
+                            <p>( <input type="text" name="ortu_nama" class="save-trigger" style="text-align: center; border: none;"> )</p>
+                            <br><br><p style="font-size: 0.8rem; border: 1px solid #333; display: inline-block; padding: 5px;">Materai 10.000</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="surat-siswa" class="tab-content">
+                    <h2 class="doc-subtitle" style="text-align: center;">SURAT PERNYATAAN PESERTA DIDIK</h2>
+                    <p>Saya yang bertanda tangan di bawah ini :</p>
+                    <table style="margin-top: 10px; border: none;">
+                        <tr><td style="border:none; width: 150px;">Nama Siswa</td><td style="border:none;">: <input type="text" name="siswa_nama" class="save-trigger" readonly style="display:inline; width: 70%; border-bottom: 1px dotted black;"></td></tr>
+                        <tr><td style="border:none;">Kelas</td><td style="border:none;">: <input type="text" name="siswa_kelas" class="save-trigger" readonly style="display:inline; width: 70%; border-bottom: 1px dotted black;"></td></tr>
+                        <tr><td style="border:none;">Sekolah</td><td style="border:none;">: SMK Negeri 4 Garut</td></tr>
+                        <tr><td style="border:none;">Tempat PKL</td><td style="border:none;">: <input type="text" name="dudika_nama" class="save-trigger" readonly style="display:inline; width: 70%; border-bottom: 1px dotted black;"></td></tr>
+                        <tr><td style="border:none;">Alamat PKL</td><td style="border:none;">: <input type="text" name="dudika_alamat" class="save-trigger" readonly style="display:inline; width: 70%; border-bottom: 1px dotted black;"></td></tr>
+                    </table>
+                    <p>Menyatakan :</p>
+                    <ol style="margin-left: 20px;">
+                        <li>Akan mentaati peraturan di tempat PKL.</li>
+                        <li>Siap mengikuti kegiatan sesuai jadwal.</li>
+                        <li>Siap dijatuhi sanksi apabila melanggar.</li>
+                    </ol>
+                    <div class="row">
+                        <div class="col signature-box" style="margin-top: 30px;">
+                            <p>Garut, <input type="date" name="tgl_surat_siswa" class="save-trigger" style="width: 130px; display: inline-block; border-bottom: 1px dotted #000;"></p>
+                            <p>Peserta PKL</p>
+                            <div class="signature-space"></div>
+                            <p>( <input type="text" name="siswa_nama" class="save-trigger" readonly style="text-align: center; border: none;"> )</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. JURNAL KEGIATAN -->
+            <section id="jurnal" class="paper hidden">
+                <div class="tabs no-print"></div>
+                <div id="journal-months-container"></div>
+            </section>
+
+            <!-- 4. CATATAN KEGIATAN -->
+            <section id="catatan" class="paper hidden">
+                <div class="tabs no-print">
+                    <button class="tab-btn active" onclick="openTab(event, 'catatan-1')">Kegiatan 1</button>
+                    <button class="tab-btn" onclick="openTab(event, 'catatan-2')">Kegiatan 2</button>
+                    <button class="tab-btn" onclick="openTab(event, 'catatan-3')">Kegiatan 3</button>
+                </div>
+                <div id="catatan-template">
+                    <h3 class="section-title">CATATAN KEGIATAN PKL</h3>
+                    <table>
+                        <tr><td style="width: 200px;">Nama Peserta Didik</td><td>: <input type="text" name="siswa_nama" class="save-trigger" readonly style="display:inline-block; width: 80%; border:none;"></td></tr>
+                        <tr><td>Dunia Kerja Tempat PKL</td><td>: <input type="text" name="dudika_nama" class="save-trigger" readonly style="display:inline-block; width: 80%; border:none;"></td></tr>
+                        <tr><td>Nama Instruktur</td><td>: <input type="text" name="dudika_instruktur_catatan" class="save-trigger" style="display:inline-block; width: 80%; border:none;"></td></tr>
+                        <tr><td>Nama Guru Pembimbing</td><td>: <input type="text" name="guru_pembimbing_catatan" class="save-trigger" style="display:inline-block; width: 80%; border:none;"></td></tr>
+                    </table>
+                    <div style="margin-top: 20px;">
+                        <label>A. Nama Pekerjaan</label><textarea name="catatan_nama_pekerjaan" class="save-trigger" rows="2"></textarea>
+                        <label>B. Perencanaan Kegiatan</label><textarea name="catatan_rencana" class="save-trigger" rows="3"></textarea>
+                        <label>C. Pelaksanaan Kegiatan/ Hasil</label><textarea name="catatan_pelaksanaan" class="save-trigger" rows="5"></textarea>
+                        <label>D. Catatan Instruktur</label><textarea name="catatan_instruktur" class="save-trigger" rows="2"></textarea>
+                    </div>
+                    <div class="signature-box"><p>Tanda Tangan Instruktur</p><div class="signature-space"></div></div>
+                </div>
+            </section>
+
+            <!-- 5. DOKUMENTASI -->
+            <section id="dokumentasi" class="paper hidden">
+                <h2 class="doc-subtitle">DOKUMENTASI KEGIATAN PKL</h2>
+                <div class="row">
+                    <div class="col col-half" style="border: 1px dashed #ccc; height: 300px; margin: 10px; display: flex; align-items: center; justify-content: center; position: relative;"><span>Foto 1</span><textarea placeholder="Keterangan:" class="save-trigger" style="position: absolute; bottom: 0; width: 100%; background: rgba(255,255,255,0.8); height: 60px;"></textarea></div>
+                    <div class="col col-half" style="border: 1px dashed #ccc; height: 300px; margin: 10px; display: flex; align-items: center; justify-content: center; position: relative;"><span>Foto 2</span><textarea placeholder="Keterangan:" class="save-trigger" style="position: absolute; bottom: 0; width: 100%; background: rgba(255,255,255,0.8); height: 60px;"></textarea></div>
+                    <div class="col col-half" style="border: 1px dashed #ccc; height: 300px; margin: 10px; display: flex; align-items: center; justify-content: center; position: relative;"><span>Foto 3</span><textarea placeholder="Keterangan:" class="save-trigger" style="position: absolute; bottom: 0; width: 100%; background: rgba(255,255,255,0.8); height: 60px;"></textarea></div>
+                    <div class="col col-half" style="border: 1px dashed #ccc; height: 300px; margin: 10px; display: flex; align-items: center; justify-content: center; position: relative;"><span>Foto 4</span><textarea placeholder="Keterangan:" class="save-trigger" style="position: absolute; bottom: 0; width: 100%; background: rgba(255,255,255,0.8); height: 60px;"></textarea></div>
+                </div>
+            </section>
+
+            <!-- 6. OBSERVASI -->
+            <section id="observasi" class="paper hidden">
+                <h3 class="section-title">LEMBAR OBSERVASI PKL</h3>
+                <table>
+                    <tr><td style="width: 200px;">Nama Peserta Didik</td><td>: <input type="text" name="siswa_nama" class="save-trigger" readonly style="display:inline-block; width: 80%; border:none;"></td></tr>
+                    <tr><td>Dunia Kerja Tempat PKL</td><td>: <input type="text" name="dudika_nama" class="save-trigger" readonly style="display:inline-block; width: 80%; border:none;"></td></tr>
+                    <tr><td>Nama Instruktur</td><td>: <input type="text" name="dudika_instruktur_obs" class="save-trigger" style="display:inline-block; width: 80%; border:none;"></td></tr>
+                    <tr><td>Nama Guru Pembimbing</td><td>: <input type="text" name="guru_pembimbing_obs" class="save-trigger" style="display:inline-block; width: 80%; border:none;"></td></tr>
+                </table>
+                <!-- Sederhanakan observasi untuk contoh -->
+                <p>Checklist observasi disimpan secara lokal di input ini:</p>
+                <textarea class="save-trigger" rows="5" placeholder="Isi detail observasi di sini..."></textarea>
+            </section>
+
+            <!-- 7. DAFTAR NILAI -->
+            <section id="nilai" class="paper hidden">
+                <h2 class="doc-subtitle">DAFTAR NILAI PESERTA DIDIK PKL</h2>
+                <h3 class="doc-subtitle">SMK NEGERI 4 GARUT <br> TAHUN AJARAN 2024 / 2025</h3>
+                <table style="margin-bottom: 20px;">
+                    <tr><td style="width: 250px;">Nama Peserta Didik</td><td>: <input type="text" name="siswa_nama" class="save-trigger" readonly style="display:inline-block; width: 70%; border:none;"></td></tr>
+                    <tr><td>NISN</td><td>: <input type="text" name="siswa_nisn" class="save-trigger" style="display:inline-block; width: 70%; border:none;"></td></tr>
+                    <tr><td>Kelas / Program Keahlian</td><td>: <input type="text" name="siswa_kelas" class="save-trigger" readonly style="display:inline-block; width: 30%; border:none;"> / <input type="text" name="prog_keahlian" class="save-trigger" style="display:inline-block; width: 30%; border:none;"></td></tr>
+                </table>
+                <table>
+                    <thead><tr><th style="width: 30px;">No</th><th style="text-align: left;">Tujuan Pembelajaran</th><th style="width: 80px;">Skor</th><th style="text-align: left;">Deskripsi</th></tr></thead>
+                    <tbody>
+                        <tr><td style="text-align:center;">1</td><td>Menerapkan Soft Skills</td><td><input type="number" class="input-no-border save-trigger" style="text-align:center;"></td><td><input class="input-no-border save-trigger" type="text"></td></tr>
+                        <tr><td style="text-align:center;">2</td><td>Menerapkan norma, POS dan K3LH</td><td><input type="number" class="input-no-border save-trigger" style="text-align:center;"></td><td><input class="input-no-border save-trigger" type="text"></td></tr>
+                        <tr><td style="text-align:center;">3</td><td>Menerapkan Kompetensi Teknis</td><td><input type="number" class="input-no-border save-trigger" style="text-align:center;"></td><td><input class="input-no-border save-trigger" type="text"></td></tr>
+                        <tr><td style="text-align:center;">4</td><td>Memahami alur bisnis</td><td><input type="number" class="input-no-border save-trigger" style="text-align:center;"></td><td><input class="input-no-border save-trigger" type="text"></td></tr>
+                    </tbody>
+                </table>
+                <div class="signature-box"><p>Guru Pembimbing</p><div class="signature-space"></div></div>
+            </section>
+
+        </main>
     </div>
 
-    <!-- TAB FOTO -->
-    <div id="tab-foto" class="tab-content hidden">
-      <div class="card">
-        <h3>Upload Foto Kegiatan</h3>
-        <div class="form-group"><label>Tanggal</label><input type="date" id="d-tgl"></div>
-        <div class="form-group"><label>Pilih Foto</label><input type="file" id="d-file" accept="image/*"></div>
-        <div class="form-group"><label>Keterangan</label><input type="text" id="d-ket" placeholder="Keterangan foto..."></div>
-        
-        <button onclick="uploadFoto()" class="btn-primary">Upload Foto</button>
-        <div id="d-msg" class="msg"></div>
-      </div>
+    <!-- TOAST -->
+    <div id="toast">Data tersimpan!</div>
 
-      <div class="card">
-        <h3>Galeri Foto</h3>
-        <div id="galeri" class="gallery"></div>
-      </div>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+    <!-- Link ke Script JS -->
+    <script src="script.js"></script>
 </body>
 </html>
