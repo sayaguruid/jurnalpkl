@@ -1,4 +1,4 @@
-const API_URL = 'https://script.google.com/macros/s/AKfycbysxppH_OMJdAjxFaukWrBnjZE7D76jWncJa1R6ep12pH3lfV_KKFEK2RAalXOEEJW8tA/exec'; // Pastikan URL ini sudah benar tanpa /u/1/
+const API_URL = 'https://script.google.com/macros/s/AKfycbypoGiSXf6hlYPWX6RliXeNoXcNOCDD0O_j0j_VNISvDljJP44Udm4jUtC2WoZY5xGq/exec'; // Pastikan URL ini sudah benar tanpa /u/1/
 let currentUser = null;
 
 // NAVIGASI TAB
