@@ -1,251 +1,555 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jurnal PKL SMK Negeri 4 Garut</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- Library untuk Download PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistem Jurnal PKL SMK 4 Garut</title>
+  <style>
+    /* --- CSS STYLING --- */
+    :root {
+      --primary: #2563eb;
+      --secondary: #64748b;
+      --bg: #f1f5f9;
+      --white: #ffffff;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --border: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { margin: 0; background: var(--bg); color: #334155; }
+
+    /* Login Screen */
+    #login-page {
+      display: flex; justify-content: center; align-items: center; height: 100vh;
+      background: linear-gradient(135deg, var(--primary), #1e40af);
+    }
+    .login-card {
+      background: var(--white); padding: 2rem; border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 90%; max-width: 400px; text-align: center;
+    }
+    .login-card h2 { margin-top: 0; color: var(--primary); }
+    .form-group { margin-bottom: 1rem; text-align: left; }
+    .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; }
+    .form-control {
+      width: 100%; padding: 0.75rem; border: 1px solid var(--border);
+      border-radius: 6px; font-size: 1rem; transition: border 0.2s;
+    }
+    .form-control:focus { outline: none; border-color: var(--primary); }
+    .btn {
+      width: 100%; padding: 0.75rem; border: none; border-radius: 6px;
+      font-weight: 600; cursor: pointer; transition: background 0.2s; font-size: 1rem;
+    }
+    .btn-primary { background: var(--primary); color: var(--white); }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-logout { background: var(--danger); color: var(--white); margin-top: 1rem; }
+    .btn-logout:hover { background: #dc2626; }
+
+    /* Dashboard */
+    #dashboard-page { display: none; max-width: 1000px; margin: 0 auto; padding: 1rem; }
+    header {
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--white); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .user-info { font-weight: bold; color: var(--primary); }
+
+    /* Navigation Tabs */
+    .tabs { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 5px; margin-bottom: 1rem; }
+    .tab-btn {
+      padding: 0.75rem 1.5rem; background: var(--white); border: 1px solid var(--border);
+      border-radius: 20px; cursor: pointer; white-space: nowrap; color: var(--secondary);
+    }
+    .tab-btn.active { background: var(--primary); color: var(--white); border-color: var(--primary); }
+
+    /* Content Sections */
+    .tab-content { display: none; animation: fadeIn 0.3s; }
+    .tab-content.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+    .card { background: var(--white); padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 1.5rem; }
+    .card h3 { margin-top: 0; border-bottom: 2px solid var(--bg); padding-bottom: 0.5rem; margin-bottom: 1rem; }
+
+    /* Tables & Lists */
+    .table-responsive { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.9rem; }
+    th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+    th { background: #f8fafc; font-weight: 600; color: var(--secondary); }
+    .status { padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
+    .status-hadir { background: #dcfce7; color: #166534; }
+    .status-izin { background: #fef9c3; color: #854d0e; }
+    .status-sakit { background: #fee2e2; color: #991b1b; }
+    .status-bolos { background: #f1f5f9; color: #475569; }
+
+    /* Gallery */
+    .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }
+    .gallery-item { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .gallery-item img { width: 100%; height: 150px; object-fit: cover; display: block; }
+    .gallery-desc { padding: 0.5rem; font-size: 0.85rem; }
+    .gallery-desc b { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* Notifications */
+    .toast {
+      position: fixed; bottom: 20px; right: 20px; background: #333; color: #fff;
+      padding: 12px 24px; border-radius: 8px; display: none; z-index: 999;
+    }
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+
+    /* Stats */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1rem; }
+    .stat-box { background: var(--white); padding: 1rem; text-align: center; border-radius: 8px; border: 1px solid var(--border); }
+    .stat-val { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
+    .stat-label { font-size: 0.8rem; color: var(--secondary); }
+    
+    @media (max-width: 600px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .card { padding: 1rem; }
+    }
+  </style>
 </head>
 <body>
 
-    <!-- LOGIN PAGE -->
-    <div id="login-page" class="container">
-        <div class="login-box">
-            <div class="login-logo">
-                <i class="fas fa-school"></i>
-            </div>
-            <h2>JURNAL PKL 2026</h2>
-            <p class="subtitle">SMK Negeri 4 Garut</p>
-            <form id="login-form">
-                <div class="input-group">
-                    <i class="fas fa-id-badge"></i>
-                    <input type="text" id="nis-input" placeholder="Masukkan Nomor Induk Siswa" required>
-                </div>
-                <button type="submit" id="login-btn" class="btn-primary">MASUK</button>
-                <p id="login-error" class="error-msg"></p>
-            </form>
-        </div>
+  <!-- Notification Toast -->
+  <div id="toast" class="toast">Pesan notifikasi</div>
+
+  <!-- Halaman Login -->
+  <div id="login-page">
+    <div class="login-card">
+      <h2>Sistem Jurnal PKL</h2>
+      <div class="form-group">
+        <label>Masukkan NIS</label>
+        <input type="number" id="nis-input" class="form-control" placeholder="Contoh: 2026101">
+      </div>
+      <p id="login-error" style="color: var(--danger); font-size: 0.9rem;"></p>
+      <button onclick="handleLogin()" class="btn btn-primary">Masuk</button>
+    </div>
+  </div>
+
+  <!-- Halaman Dashboard -->
+  <div id="dashboard-page">
+    <header>
+      <div class="user-info" id="user-name">Halo, Siswa</div>
+      <button onclick="handleLogout()" class="btn" style="width: auto; background: #fee2e2; color: #991b1b;">Keluar</button>
+    </header>
+
+    <!-- Navigasi Tab -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="openTab('profil')">Profil</button>
+      <button class="tab-btn" onclick="openTab('jurnal')">Jurnal Harian</button>
+      <button class="tab-btn" onclick="openTab('catatan')">Catatan Kegiatan</button>
+      <button class="tab-btn" onclick="openTab('dokumentasi')">Dokumentasi</button>
     </div>
 
-    <!-- DASHBOARD PAGE -->
-    <div id="dashboard-page" class="container hidden">
-        <nav class="navbar">
-            <div class="nav-brand">
-                <i class="fas fa-book-open"></i>
-                <span>Dashboard PKL</span>
-            </div>
-            <div class="nav-right">
-                <span id="user-name"><i class="fas fa-user-circle"></i> Siswa</span>
-                <button id="logout-btn" class="btn-danger-sm"><i class="fas fa-sign-out-alt"></i> Keluar</button>
-            </div>
-        </nav>
+    <!-- TAB PROFIL -->
+    <div id="profil" class="tab-content active">
+      <div class="card">
+        <h3>Data Siswa & DUDIKA</h3>
+        <form id="profil-form">
+          <div class="form-group">
+            <label>Nama Lengkap</label>
+            <input type="text" id="p-nama" class="form-control" readonly style="background: #f1f5f9;">
+          </div>
+          <div class="form-group"><label>Kelas</label><input type="text" id="p-kelas" class="form-control" readonly style="background: #f1f5f9;"></div>
+          <div class="form-group"><label>Nama DUDIKA</label><input type="text" id="p-namaDUDIKA" class="form-control" readonly style="background: #f1f5f9;"></div>
+          <div class="form-group"><label>Alamat DUDIKA</label><input type="text" id="p-alamatDUDIKA" class="form-control"></div>
+          <div class="form-group"><label>Pembimbing DUDIKA</label><input type="text" id="p-pembimbingDUDIKA" class="form-control"></div>
+          <button type="submit" class="btn btn-primary">Simpan Perubahan Profil</button>
+        </form>
+        <p id="profil-msg" style="margin-top:10px;"></p>
+      </div>
+    </div>
 
-        <div class="tabs">
-            <button class="tab-btn active" onclick="openTab('profil', this)"><i class="fas fa-id-card"></i> Identitas</button>
-            <button class="tab-btn" onclick="openTab('jurnal', this)"><i class="fas fa-pen-alt"></i> Jurnal</button>
-            <button class="tab-btn" onclick="openTab('catatan', this)"><i class="fas fa-file-alt"></i> Catatan</button>
-            <button class="tab-btn" onclick="openTab('dokumen', this)"><i class="fas fa-camera-retro"></i> Dokumen</button>
-            <button class="tab-btn" onclick="openTab('rekap', this)"><i class="fas fa-chart-pie"></i> Rekap</button>
+    <!-- TAB JURNAL -->
+    <div id="jurnal" class="tab-content">
+      <!-- Form Input -->
+      <div class="card">
+        <h3>Isi Jurnal Hari Ini</h3>
+        <form id="jurnal-form">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="form-group"><label>Tanggal</label><input type="date" id="j-tanggal" class="form-control" required></div>
+            <div class="form-group"><label>Kehadiran</label>
+              <select id="j-kehadiran" class="form-control" required>
+                <option value="Hadir">Hadir</option>
+                <option value="Izin">Izin</option>
+                <option value="Sakit">Sakit</option>
+                <option value="Bolos">Bolos</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group"><label>Unit Kerja / Bagian</label><input type="text" id="j-unit" class="form-control" placeholder="Contoh: Administrasi" required></div>
+          <div class="form-group"><label>Catatan Kegiatan</label><textarea id="j-catatan" class="form-control" rows="3" placeholder="Apa yang dilakukan hari ini..." required></textarea></div>
+          <button type="submit" class="btn btn-primary">Simpan Jurnal</button>
+        </form>
+        <p id="jurnal-msg" style="margin-top:10px;"></p>
+      </div>
+
+      <!-- Statistik -->
+      <div class="stats-grid">
+        <div class="stat-box"><div class="stat-val" id="r-hadir">0</div><div class="stat-label">Hadir</div></div>
+        <div class="stat-box"><div class="stat-val" id="r-izin">0</div><div class="stat-label">Izin</div></div>
+        <div class="stat-box"><div class="stat-val" id="r-sakit">0</div><div class="stat-label">Sakit</div></div>
+        <div class="stat-box"><div class="stat-val" id="r-bolos">0</div><div class="stat-label">Bolos</div></div>
+      </div>
+
+      <!-- Riwayat Tabel -->
+      <div class="card">
+        <h3>Riwayat Jurnal</h3>
+        <div class="table-responsive">
+          <table id="tabel-jurnal">
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Unit Kerja</th>
+                <th>Catatan</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Data akan dimuat via JS -->
+            </tbody>
+          </table>
         </div>
+      </div>
+    </div>
 
-        <div class="dashboard-content">
+    <!-- TAB CATATAN -->
+    <div id="catatan" class="tab-content">
+      <div class="card">
+        <h3>Catatan Kegiatan Khusus</h3>
+        <form id="catatan-form">
+          <div class="form-group"><label>Tanggal</label><input type="date" id="c-tanggal" class="form-control" required></div>
+          <div class="form-group"><label>Nama Pekerjaan / Proyek</label><input type="text" id="c-namaPekerjaan" class="form-control" required></div>
+          <div class="form-group"><label>Perencanaan</label><textarea id="c-perencanaan" class="form-control" rows="2" required></textarea></div>
+          <div class="form-group"><label>Pelaksanaan</label><textarea id="c-pelaksanaan" class="form-control" rows="2" required></textarea></div>
+          <div class="form-group"><label>Catatan Instruktur</label><input type="text" id="c-catatanInstruktur" class="form-control"></div>
+          <button type="submit" class="btn btn-primary">Simpan Catatan</button>
+        </form>
+        <p id="catatan-msg" style="margin-top:10px;"></p>
+      </div>
+
+      <div class="card">
+        <h3>Riwayat Catatan</h3>
+        <div class="table-responsive">
+          <table id="tabel-catatan">
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Pekerjaan</th>
+                <th>Perencanaan</th>
+                <th>Pelaksanaan</th>
+                <th>Catatan Instruktur</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB DOKUMENTASI -->
+    <div id="dokumentasi" class="tab-content">
+      <div class="card">
+        <h3>Upload Foto Kegiatan</h3>
+        <form id="dokumen-form">
+          <div class="form-group"><label>Tanggal</label><input type="date" id="d-tanggal" class="form-control" required></div>
+          <div class="form-group"><label>Foto</label><input type="file" id="d-foto" accept="image/*" class="form-control" required></div>
+          <div class="form-group"><label>Keterangan</label><input type="text" id="d-keterangan" class="form-control" placeholder="Kegiatan pada foto..." required></div>
+          <button type="submit" class="btn btn-primary">Upload Foto</button>
+        </form>
+        <p id="dokumen-msg" style="margin-top:10px;"></p>
+      </div>
+
+      <div class="card">
+        <h3>Galeri Dokumentasi</h3>
+        <div id="galeri-foto" class="gallery">
+          <!-- Foto akan muncul di sini -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // JAVASCRIPT LOGIC
+    // ==========================================
+    
+    // GANTI URL INI DENGAN URL WEB APP ANDA
+    const API_URL = 'https://script.google.com/macros/s/AKfycbysxppH_OMJdAjxFaukWrBnjZE7D76jWncJa1R6ep12pH3lfV_KKFEK2RAalXOEEJW8tA/exec';
+    
+    let currentUser = null;
+
+    // --- INISIALISASI ---
+    window.addEventListener('DOMContentLoaded', () => {
+      const user = localStorage.getItem('pklUser');
+      if (user) {
+        currentUser = JSON.parse(user);
+        showDashboard();
+      }
+      // Set default date inputs to today
+      document.querySelectorAll('input[type="date"]').forEach(el => el.valueAsDate = new Date());
+    });
+
+    // --- NAVIGASI ---
+    function openTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+      event.currentTarget.classList.add('active');
+      
+      // Refresh data when tab opens
+      if(tabName === 'jurnal') loadJurnal();
+      if(tabName === 'catatan') loadCatatan();
+      if(tabName === 'dokumentasi') loadDokumentasi();
+    }
+
+    function showToast(msg, type = 'success') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = `toast ${type}`;
+      t.style.display = 'block';
+      setTimeout(() => t.style.display = 'none', 3000);
+    }
+
+    // --- LOGIN SYSTEM ---
+    async function handleLogin() {
+      const nis = document.getElementById('nis-input').value.trim();
+      const err = document.getElementById('login-error');
+      if(!nis) return err.textContent = "NIS wajib diisi!";
+      
+      err.textContent = "Memproses...";
+      try {
+        const res = await fetch(`${API_URL}?action=login&nis=${nis}`);
+        const result = await res.json();
+        
+        if (result.status === 'success') {
+          currentUser = { nis: nis, data: result.data };
+          localStorage.setItem('pklUser', JSON.stringify(currentUser));
+          showDashboard();
+        } else {
+          err.textContent = result.message;
+        }
+      } catch (error) {
+        err.textContent = "Gagal terhubung ke server.";
+      }
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('pklUser');
+      location.reload();
+    }
+
+    function showDashboard() {
+      document.getElementById('login-page').style.display = 'none';
+      document.getElementById('dashboard-page').style.display = 'block';
+      document.getElementById('user-name').textContent = `Halo, ${currentUser.data[1]}`;
+      
+      // Populate Form Profil
+      const d = currentUser.data;
+      document.getElementById('p-nama').value = d[1];
+      document.getElementById('p-kelas').value = d[2];
+      document.getElementById('p-namaDUDIKA').value = d[10];
+      document.getElementById('p-alamatDUDIKA').value = d[12];
+      document.getElementById('p-pembimbingDUDIKA').value = d[15];
+
+      // Load initial data
+      loadJurnal();
+    }
+
+    // --- HELPER FETCH ---
+    async function postData(data, msgId) {
+      const msgEl = document.getElementById(msgId);
+      msgEl.textContent = "Menyimpan...";
+      try {
+        const res = await fetch(API_URL, { 
+          method: 'POST', 
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+          body: JSON.stringify(data) 
+        });
+        const result = await res.json();
+        if(result.status === 'success'){
+          msgEl.style.color = 'var(--success)';
+          msgEl.textContent = "Berhasil disimpan!";
+          showToast("Data berhasil disimpan");
+          return true;
+        } else {
+          throw new Error(result.message);
+        }
+      } catch (error) {
+        msgEl.style.color = 'var(--danger)';
+        msgEl.textContent = "Gagal: " + error.message;
+        showToast("Gagal menyimpan", "error");
+        return false;
+      }
+    }
+
+    // --- FITUR PROFIL ---
+    document.getElementById('profil-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const success = await postData({
+        action: 'saveProfile', nis: currentUser.nis,
+        alamatDUDIKA: document.getElementById('p-alamatDUDIKA').value,
+        pembimbingDUDIKA: document.getElementById('p-pembimbingDUDIKA').value
+      }, 'profil-msg');
+    });
+
+    // --- FITUR JURNAL ---
+    document.getElementById('jurnal-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const success = await postData({
+        action: 'saveJurnal', nis: currentUser.nis,
+        tanggal: document.getElementById('j-tanggal').value,
+        unitKerja: document.getElementById('j-unit').value,
+        catatan: document.getElementById('j-catatan').value,
+        kehadiran: document.getElementById('j-kehadiran').value
+      }, 'jurnal-msg');
+
+      if(success) {
+        document.getElementById('jurnal-form').reset();
+        document.getElementById('j-tanggal').valueAsDate = new Date(); // Reset date to today
+        loadJurnal(); // AUTO REFRESH
+      }
+    });
+
+    async function loadJurnal() {
+      try {
+        const res = await fetch(`${API_URL}?action=getJurnal&nis=${currentUser.nis}`);
+        const data = await res.json();
+        const tbody = document.querySelector('#tabel-jurnal tbody');
+        tbody.innerHTML = '';
+        
+        let stats = { hadir: 0, izin: 0, sakit: 0, bolos: 0 };
+
+        if (Array.isArray(data) && data.length > 0) {
+          data.reverse().forEach(item => {
+            const statusClass = `status status-${item.kehadiran.toLowerCase()}`;
+            tbody.innerHTML += `
+              <tr>
+                <td>${item.tanggal}</td>
+                <td>${item.unitKerja}</td>
+                <td>${item.catatan}</td>
+                <td><span class="${statusClass}">${item.kehadiran}</span></td>
+              </tr>`;
             
-            <!-- TAB PROFIL -->
-            <div id="profil" class="tab-content active">
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Identitas DUDIKA & Peserta</h3>
-                        <div class="card-icon"><i class="fas fa-user-edit"></i></div>
-                    </div>
-                    <form id="profil-form" class="modern-form">
-                        <div class="section-title">1. Identitas DUDIKA</div>
-                        <div class="form-row">
-                            <div class="form-group"><input type="text" id="p-namaDUDIKA" placeholder="Nama DUDIKA"><label>Nama DUDIKA</label></div>
-                            <div class="form-group"><input type="text" id="p-bidangUsaha" placeholder="Bidang Usaha/Jenis Kegiatan"><label>Bidang Usaha</label></div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group"><input type="text" id="p-alamatDUDIKA" placeholder="Alamat DUDIKA"><label>Alamat</label></div>
-                            <div class="form-group"><input type="text" id="p-telpDUDIKA" placeholder="No. Telp DUDIKA"><label>No. Telepon</label></div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group"><input type="text" id="p-pimpinanDUDIKA" placeholder="Nama Pimpinan"><label>Nama Pimpinan</label></div>
-                            <div class="form-group"><input type="text" id="p-pembimbingDUDIKA" placeholder="Nama Pembimbing"><label>Nama Pembimbing</label></div>
-                        </div>
+            // Count stats
+            const k = item.kehadiran.toLowerCase();
+            if(stats[k] !== undefined) stats[k]++;
+          });
+        } else {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center">Belum ada riwayat jurnal.</td></tr>';
+        }
 
-                        <div class="section-title">2. Identitas Peserta</div>
-                        <div class="form-row">
-                            <div class="form-group"><input type="text" id="p-nama" placeholder="Nama Lengkap"><label>Nama Lengkap</label></div>
-                            <div class="form-group"><input type="text" id="p-nis" placeholder="NIS" disabled><label>NIS</label></div>
-                            <div class="form-group"><input type="text" id="p-kelas" placeholder="Kelas"><label>Kelas</label></div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group"><input type="text" id="p-ttl" placeholder="Tempat, Tanggal Lahir"><label>Tempat, Tanggal Lahir</label></div>
-                            <div class="form-group">
-                                <select id="p-golDar"><option value="">Pilih Gol. Darah</option><option>O</option><option>A</option><option>B</option><option>AB</option></select>
-                                <label>Golongan Darah</label>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group"><input type="text" id="p-alamatSiswa" placeholder="Alamat Siswa"><label>Alamat Siswa</label></div>
-                            <div class="form-group"><input type="text" id="p-noHpSiswa" placeholder="No. HP Siswa"><label>No. HP Siswa</label></div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group"><input type="text" id="p-namaOrtu" placeholder="Nama Orang Tua/Wali"><label>Nama Orang Tua/Wali</label></div>
-                            <div class="form-group"><input type="text" id="p-alamatOrtu" placeholder="Alamat Ortu"><label>Alamat Ortu</label></div>
-                            <div class="form-group"><input type="text" id="p-noHpOrtu" placeholder="No. HP Ortu"><label>No. HP Ortu</label></div>
-                        </div>
-                        
-                        <div class="section-title">3. Pembimbing</div>
-                        <div class="form-row">
-                            <div class="form-group"><input type="text" id="p-instruktur" placeholder="Nama Instruktur"><label>Nama Instruktur</label></div>
-                            <div class="form-group"><input type="text" id="p-guruPembimbing" placeholder="Nama Guru Pembimbing"><label>Nama Guru Pembimbing</label></div>
-                        </div>
+        // Update stats UI
+        document.getElementById('r-hadir').textContent = stats.hadir;
+        document.getElementById('r-izin').textContent = stats.izin;
+        document.getElementById('r-sakit').textContent = stats.sakit;
+        document.getElementById('r-bolos').textContent = stats.bolos;
+      } catch (e) { console.error(e); }
+    }
 
-                        <button type="submit" class="btn-primary" style="margin-top: 20px;"><i class="fas fa-save"></i> Simpan Identitas</button>
-                        <p id="profil-msg" class="msg-feedback"></p>
-                    </form>
+    // --- FITUR CATATAN (DITAMBAHKAN) ---
+    document.getElementById('catatan-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const success = await postData({
+        action: 'saveCatatan', nis: currentUser.nis,
+        tanggal: document.getElementById('c-tanggal').value,
+        namaPekerjaan: document.getElementById('c-namaPekerjaan').value,
+        perencanaan: document.getElementById('c-perencanaan').value,
+        pelaksanaan: document.getElementById('c-pelaksanaan').value,
+        catatanInstruktur: document.getElementById('c-catatanInstruktur').value
+      }, 'catatan-msg');
+
+      if(success) {
+        document.getElementById('catatan-form').reset();
+        document.getElementById('c-tanggal').valueAsDate = new Date();
+        loadCatatan(); // AUTO REFRESH
+      }
+    });
+
+    async function loadCatatan() {
+      try {
+        const res = await fetch(`${API_URL}?action=getCatatan&nis=${currentUser.nis}`);
+        const data = await res.json();
+        const tbody = document.querySelector('#tabel-catatan tbody');
+        tbody.innerHTML = '';
+
+        if (Array.isArray(data) && data.length > 0) {
+          data.reverse().forEach(item => {
+            tbody.innerHTML += `
+              <tr>
+                <td>${item.tanggal}</td>
+                <td><b>${item.namaPekerjaan}</b></td>
+                <td>${item.perencanaan}</td>
+                <td>${item.pelaksanaan}</td>
+                <td><i>${item.catatanInstruktur || '-'}</i></td>
+              </tr>`;
+          });
+        } else {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center">Belum ada catatan kegiatan.</td></tr>';
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    // --- FITUR DOKUMENTASI ---
+    document.getElementById('dokumen-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fileInput = document.getElementById('d-foto');
+      const file = fileInput.files[0];
+      if(!file) return alert("Pilih foto terlebih dahulu");
+
+      const msg = document.getElementById('dokumen-msg');
+      msg.textContent = "Mengupload...";
+
+      const reader = new FileReader();
+      reader.onload = async function(evt) {
+        const base64 = evt.target.result;
+        const success = await postData({
+          action: 'saveDokumentasi', nis: currentUser.nis,
+          tanggal: document.getElementById('d-tanggal').value,
+          keterangan: document.getElementById('d-keterangan').value,
+          fileName: `PKL_${currentUser.nis}_${Date.now()}.jpg`,
+          base64: base64
+        }, 'dokumen-msg');
+
+        if(success) {
+          document.getElementById('dokumen-form').reset();
+          document.getElementById('d-tanggal').valueAsDate = new Date();
+          loadDokumentasi(); // AUTO REFRESH
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+
+    async function loadDokumentasi() {
+      try {
+        const res = await fetch(`${API_URL}?action=getDokumentasi&nis=${currentUser.nis}`);
+        const data = await res.json();
+        const gallery = document.getElementById('galeri-foto');
+        gallery.innerHTML = '';
+
+        if (Array.isArray(data) && data.length > 0) {
+          data.reverse().forEach(item => {
+            let imgUrl = item.url;
+            // Konversi URL Drive agar bisa ditampilkan di tag <img>
+            if(imgUrl.includes("drive.google.com")) {
+              const id = imgUrl.split('/d/')[1]?.split('/')[0];
+              if(id) imgUrl = `https://drive.google.com/uc?export=view&id=${id}`;
+            }
+            
+            gallery.innerHTML += `
+              <div class="gallery-item">
+                <img src="${imgUrl}" loading="lazy" alt="Foto">
+                <div class="gallery-desc">
+                  <b>${item.keterangan}</b>
+                  <small>${item.tanggal}</small>
                 </div>
-            </div>
-
-            <!-- TAB JURNAL -->
-            <div id="jurnal" class="tab-content">
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Input Jurnal Harian</h3>
-                        <div class="card-icon"><i class="fas fa-pen-alt"></i></div>
-                    </div>
-                    <form id="jurnal-form" class="modern-form">
-                        <div class="form-row">
-                            <div class="form-group"><input type="date" id="j-tanggal" required><label>Tanggal</label></div>
-                            <div class="form-group">
-                                <select id="j-kehadiran" required>
-                                    <option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option><option value="Bolos">Bolos</option>
-                                </select>
-                                <label>Kehadiran</label>
-                            </div>
-                        </div>
-                        <div class="form-group"><input type="text" id="j-unit" placeholder="Unit Kerja / Pekerjaan" required><label>Unit Kerja / Pekerjaan</label></div>
-                        <div class="form-group"><textarea id="j-catatan" rows="3" placeholder="Catatan Kegiatan..." required></textarea><label>Catatan Kegiatan</label></div>
-                        <button type="submit" class="btn-primary"><i class="fas fa-plus-circle"></i> Simpan Jurnal</button>
-                        <p id="jurnal-msg" class="msg-feedback"></p>
-                    </form>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Riwayat Jurnal</h3>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="modern-table">
-                            <thead><tr><th>Tanggal</th><th>Pekerjaan</th><th>Catatan</th><th>Status</th></tr></thead>
-                            <tbody id="jurnal-table-body"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB CATATAN -->
-            <div id="catatan" class="tab-content">
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Catatan Kegiatan PKL</h3>
-                        <div class="card-icon"><i class="fas fa-file-alt"></i></div>
-                    </div>
-                    <form id="catatan-form" class="modern-form">
-                        <div class="form-group"><input type="date" id="c-tanggal" required><label>Tanggal</label></div>
-                        <div class="form-group"><input type="text" id="c-namaPekerjaan" placeholder="A. Nama Pekerjaan" required><label>Nama Pekerjaan</label></div>
-                        <div class="form-group"><textarea id="c-perencanaan" rows="3" placeholder="B. Perencanaan Kegiatan"></textarea><label>Perencanaan Kegiatan</label></div>
-                        <div class="form-group"><textarea id="c-pelaksanaan" rows="3" placeholder="C. Pelaksanaan Kegiatan / Hasil"></textarea><label>Pelaksanaan Kegiatan / Hasil</label></div>
-                        <div class="form-group"><textarea id="c-catatanInstruktur" rows="3" placeholder="D. Catatan Instruktur"></textarea><label>Catatan Instruktur</label></div>
-                        <button type="submit" class="btn-primary"><i class="fas fa-plus-circle"></i> Simpan Catatan</button>
-                        <p id="catatan-msg" class="msg-feedback"></p>
-                    </form>
-                </div>
-            </div>
-
-            <!-- TAB DOKUMENTASI -->
-            <div id="dokumen" class="tab-content">
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Upload Dokumentasi</h3>
-                        <div class="card-icon"><i class="fas fa-camera-retro"></i></div>
-                    </div>
-                    <form id="dokumen-form" class="modern-form">
-                        <div class="form-row">
-                            <div class="form-group"><input type="date" id="d-tanggal" required><label>Tanggal</label></div>
-                            <div class="form-group custom-file">
-                                <input type="file" id="d-foto" accept="image/*" required>
-                                <label for="d-foto"><i class="fas fa-upload"></i> Pilih Foto</label>
-                            </div>
-                        </div>
-                        <div class="form-group"><input type="text" id="d-keterangan" placeholder="Keterangan Foto" required><label>Keterangan Foto</label></div>
-                        <button type="submit" class="btn-primary"><i class="fas fa-cloud-upload-alt"></i> Upload</button>
-                        <p id="dokumen-msg" class="msg-feedback"></p>
-                    </form>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Galeri Dokumentasi</h3>
-                    </div>
-                    <div id="galeri-foto" class="galeri-grid"></div>
-                </div>
-            </div>
-
-            <!-- TAB REKAP & CETAK -->
-            <div id="rekap" class="tab-content">
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Rekapitulasi Kehadiran</h3>
-                        <div class="card-icon"><i class="fas fa-chart-pie"></i></div>
-                    </div>
-                    <div class="rekap-container">
-                        <div class="rekap-card hadir">
-                            <i class="fas fa-check-circle"></i>
-                            <div class="rekap-val" id="r-hadir">0</div>
-                            <div class="rekap-label">Hadir</div>
-                        </div>
-                        <div class="rekap-card izin">
-                            <i class="fas fa-envelope-open"></i>
-                            <div class="rekap-val" id="r-izin">0</div>
-                            <div class="rekap-label">Izin</div>
-                        </div>
-                        <div class="rekap-card sakit">
-                            <i class="fas fa-medkit"></i>
-                            <div class="rekap-val" id="r-sakit">0</div>
-                            <div class="rekap-label">Sakit</div>
-                        </div>
-                        <div class="rekap-card bolos">
-                            <i class="fas fa-times-circle"></i>
-                            <div class="rekap-val" id="r-bolos">0</div>
-                            <div class="rekap-label">Bolos</div>
-                        </div>
-                    </div>
-                    <button onclick="generatePDF()" class="btn-pdf"><i class="fas fa-file-pdf"></i> Download Jurnal PDF</button>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- DIV UNTUK PDF (DISHIDDEN) -->
-    <div id="print-area" class="print-area">
-        <h2>JURNAL PRAKTIK KERJA LAPANGAN (PKL)</h2>
-        <h3>SMK NEGERI 4 GARUT TAHUN 2026</h3>
-        <br>
-        <div id="pdf-profil"></div>
-        <h4>JURNAL KEGIATAN</h4>
-        <table border="1" style="width:100%; border-collapse:collapse; text-align:left;">
-            <thead><tr><th>No</th><th>Hari/Tanggal</th><th>Unit Kerja/Pekerjaan</th><th>Catatan</th><th>Hadir</th></tr></thead>
-            <tbody id="pdf-tabel-jurnal"></tbody>
-        </table>
-        <br>
-        <h4>REKAPITULASI KEHADIRAN</h4>
-        <p id="pdf-rekap"></p>
-    </div>
-
-    <script src="script.js"></script>
+              </div>`;
+          });
+        } else {
+          gallery.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:#999;">Belum ada foto dokumentasi.</p>';
+        }
+      } catch (e) { console.error(e); }
+    }
+  </script>
 </body>
 </html>
