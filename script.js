@@ -132,8 +132,8 @@ async function loadJurnal() {
 
         if (jurnals.length > 0) {
             jurnals.reverse().forEach(row => {
-                const cls = `status-${row.kehadiran.toLowerCase()}`;
-                tbody.innerHTML += `<tr><td>${row.tanggal}</td><td>${row.unitKerja}</td><td>${row.catatan}</td><td class="${cls}">${row.kehadiran}</td></tr>`;
+                const cls = `status status-${row.kehadiran.toLowerCase()}`;
+tbody.innerHTML += `<tr><td>${row.tanggal}</td><td>${row.unitKerja}</td><td>${row.catatan}</td><td><span class="${cls}">${row.kehadiran}</span></td></tr>`;
                 if(row.kehadiran === 'Hadir') hadir++;
                 if(row.kehadiran === 'Izin') izin++;
                 if(row.kehadiran === 'Sakit') sakit++;
