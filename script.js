@@ -1,4 +1,4 @@
-const API_URL = 'https://script.google.com/macros/s/AKfycbw52QM624GMUxkJx_9LE6EnbDeeb9Z00JUREMuqk-LIbhyH_p3q2Bv0ZwM2X0LkwXW-/exec'; // GANTI INI
+const API_URL = 'https://script.google.com/macros/s/AKfycbysxppH_OMJdAjxFaukWrBnjZE7D76jWncJa1R6ep12pH3lfV_KKFEK2RAalXOEEJW8tA/exec'; // GANTI INI
 let currentUser = null;
 
 // NAVIGASI TAB
