@@ -1,303 +1,260 @@
-const API_URL = 'https://script.google.com/macros/s/AKfycbypoGiSXf6hlYPWX6RliXeNoXcNOCDD0O_j0j_VNISvDljJP44Udm4jUtC2WoZY5xGq/exec'; // Pastikan URL ini sudah benar tanpa /u/1/
+// ==========================================
+// KONFIGURASI
+// ==========================================
+// GANTI URL INI DENGAN URL DEPLOYMENT GOOGLE APPS SCRIPT ANDA
+const API_URL = 'https://script.google.com/macros/s/AKfycbypoGiSXf6hlYPWX6RliXeNoXcNOCDD0O_j0j_VNISvDljJP44Udm4jUtC2WoZY5xGq/exec'; 
+
 let currentUser = null;
 
-// NAVIGASI TAB
-function openTab(tabName) {
-    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-    document.getElementById(tabName).classList.add('active');
-    event.currentTarget.classList.add('active');
-}
-
-// ELEMEN DOM
-const loginPage = document.getElementById('login-page');
-const dashboardPage = document.getElementById('dashboard-page');
-const loginForm = document.getElementById('login-form');
-const nisInput = document.getElementById('nis-input');
-const loginError = document.getElementById('login-error');
-
-// Cek sesi
-window.addEventListener('DOMContentLoaded', () => {
-    const user = localStorage.getItem('pklUser');
-    if (user) {
-        currentUser = JSON.parse(user);
-        showDashboard();
-    }
+// ==========================================
+// INITIALIZATION
+// ==========================================
+document.addEventListener("DOMContentLoaded", () => {
+  // Set tanggal hari ini otomatis untuk semua input date
+  const today = new Date().toISOString().split('T')[0];
+  document.querySelectorAll('input[type="date"]').forEach(el => el.value = today);
 });
 
-// LOGIN
-loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const nis = nisInput.value.trim();
-    loginError.textContent = "Proses login...";
-    try {
-        const res = await fetch(`${API_URL}?action=login&nis=${nis}`);
-        const result = await res.json();
-        if (result.status === 'success') {
-            currentUser = { nis: nis, data: result.data };
-            localStorage.setItem('pklUser', JSON.stringify(currentUser));
-            showDashboard();
-        } else {
-            loginError.textContent = "NIS tidak ditemukan!";
-        }
-    } catch (error) {
-        loginError.textContent = "Gagal terhubung ke server!";
-    }
-});
+// ==========================================
+// LOGIN SYSTEM
+// ==========================================
+function handleLogin() {
+  const nis = document.getElementById('nis').value.trim();
+  const msg = document.getElementById('login-msg');
+  
+  if(!nis) {
+    msg.innerText = "NIS tidak boleh kosong!";
+    msg.className = 'msg error';
+    return;
+  }
 
-function showDashboard() {
-    loginPage.classList.add('hidden');
-    dashboardPage.classList.remove('hidden');
-    document.getElementById('user-name').innerHTML = `<i class="fas fa-user-circle"></i> ${currentUser.data[1] || 'Siswa'}`;
-    populateProfileForm();
-    loadJurnal();
-    loadDokumentasi();
-}
+  msg.innerText = "Mengecek data...";
+  msg.className = 'msg';
 
-// ISI FORM PROFIL DARI DATABASE
-function populateProfileForm() {
-    const d = currentUser.data;
-    document.getElementById('p-nama').value = d[1] || '';
-    document.getElementById('p-nis').value = d[0] || '';
-    document.getElementById('p-kelas').value = d[2] || '';
-    document.getElementById('p-ttl').value = d[3] || '';
-    document.getElementById('p-golDar').value = d[4] || '';
-    document.getElementById('p-alamatSiswa').value = d[5] || '';
-    document.getElementById('p-noHpSiswa').value = d[6] || '';
-    document.getElementById('p-namaOrtu').value = d[7] || '';
-    document.getElementById('p-alamatOrtu').value = d[8] || '';
-    document.getElementById('p-noHpOrtu').value = d[9] || '';
-    document.getElementById('p-namaDUDIKA').value = d[10] || '';
-    document.getElementById('p-bidangUsaha').value = d[11] || '';
-    document.getElementById('p-alamatDUDIKA').value = d[12] || '';
-    document.getElementById('p-telpDUDIKA').value = d[13] || '';
-    document.getElementById('p-pimpinanDUDIKA').value = d[14] || '';
-    document.getElementById('p-pembimbingDUDIKA').value = d[15] || '';
-    document.getElementById('p-instruktur').value = d[16] || '';
-    document.getElementById('p-guruPembimbing').value = d[17] || '';
-}
-
-// SIMPAN PROFIL (DENGAN HEADER TEXT/PLAIN)
-document.getElementById('profil-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const msg = document.getElementById('profil-msg');
-    msg.textContent = "Menyimpan...";
-    const data = {
-        action: 'saveProfile', nis: currentUser.nis,
-        nama: document.getElementById('p-nama').value, kelas: document.getElementById('p-kelas').value,
-        ttl: document.getElementById('p-ttl').value, golDar: document.getElementById('p-golDar').value,
-        alamatSiswa: document.getElementById('p-alamatSiswa').value, noHpSiswa: document.getElementById('p-noHpSiswa').value,
-        namaOrtu: document.getElementById('p-namaOrtu').value, alamatOrtu: document.getElementById('p-alamatOrtu').value,
-        noHpOrtu: document.getElementById('p-noHpOrtu').value, namaDUDIKA: document.getElementById('p-namaDUDIKA').value,
-        bidangUsaha: document.getElementById('p-bidangUsaha').value, alamatDUDIKA: document.getElementById('p-alamatDUDIKA').value,
-        telpDUDIKA: document.getElementById('p-telpDUDIKA').value, pimpinanDUDIKA: document.getElementById('p-pimpinanDUDIKA').value,
-        pembimbingDUDIKA: document.getElementById('p-pembimbingDUDIKA').value, instruktur: document.getElementById('p-instruktur').value,
-        guruPembimbing: document.getElementById('p-guruPembimbing').value
-    };
-    try {
-        const res = await fetch(API_URL, { 
-            method: 'POST', 
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
-            body: JSON.stringify(data) 
-        });
-        const result = await res.json();
-        if(result.status === 'success'){
-            msg.style.color = 'green'; msg.innerHTML = "<i class='fas fa-check-circle'></i> Berhasil disimpan!";
-        } else {
-            msg.style.color = 'red'; msg.textContent = "Gagal menyimpan!";
-        }
-    } catch (error) { msg.style.color = 'red'; msg.textContent = "Gagal terhubung!"; }
-});
-
-// JURNAL HARIAN (DENGAN HEADER TEXT/PLAIN)
-document.getElementById('jurnal-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const msg = document.getElementById('jurnal-msg');
-    msg.textContent = "Menyimpan...";
-    const data = {
-        action: 'saveJurnal', nis: currentUser.nis,
-        tanggal: document.getElementById('j-tanggal').value,
-        unitKerja: document.getElementById('j-unit').value,
-        catatan: document.getElementById('j-catatan').value,
-        kehadiran: document.getElementById('j-kehadiran').value
-    };
-    try {
-        const res = await fetch(API_URL, { 
-            method: 'POST', 
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
-            body: JSON.stringify(data) 
-        });
-        const result = await res.json();
-        if(result.status === 'success'){
-            msg.style.color = 'green'; msg.innerHTML = "<i class='fas fa-check-circle'></i> Berhasil disimpan!";
-            document.getElementById('jurnal-form').reset();
-            loadJurnal();
-        } else {
-            msg.style.color = 'red'; msg.textContent = "Gagal menyimpan!";
-        }
-    } catch (error) { msg.style.color = 'red'; msg.textContent = "Gagal terhubung!"; }
-});
-
-async function loadJurnal() {
-    try {
-        const res = await fetch(`${API_URL}?action=getJurnal&nis=${currentUser.nis}`);
-        const jurnals = await res.json();
-        const tbody = document.querySelector('#tabel-jurnal tbody');
-        tbody.innerHTML = '';
+  fetch(`${API_URL}?action=login&nis=${nis}`)
+    .then(response => response.json())
+    .then(res => {
+      if(res.status === 'success') {
+        currentUser = { nis: nis, data: res.data };
         
-        let hadir=0, izin=0, sakit=0, bolos=0;
-
-        if (jurnals.length > 0) {
-            jurnals.reverse().forEach(row => {
-                const cls = `status status-${row.kehadiran.toLowerCase()}`;
-                tbody.innerHTML += `<tr><td>${row.tanggal}</td><td>${row.unitKerja}</td><td>${row.catatan}</td><td><span class="${cls}">${row.kehadiran}</span></td></tr>`;
-                if(row.kehadiran === 'Hadir') hadir++;
-                if(row.kehadiran === 'Izin') izin++;
-                if(row.kehadiran === 'Sakit') sakit++;
-                if(row.kehadiran === 'Bolos') bolos++;
-            });
-        } else {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#94a3b8;">Belum ada data jurnal</td></tr>';
-        }
+        // Tampilkan nama user
+        document.getElementById('nama-siswa').innerText = res.data[1];
+        document.getElementById('kelas-siswa').innerText = res.data[2];
         
-        document.getElementById('r-hadir').textContent = hadir;
-        document.getElementById('r-izin').textContent = izin;
-        document.getElementById('r-sakit').textContent = sakit;
-        document.getElementById('r-bolos').textContent = bolos;
-
-    } catch (error) { console.error("Gagal memuat jurnal"); }
-}
-
-// CATATAN KEGIATAN (DENGAN HEADER TEXT/PLAIN)
-document.getElementById('catatan-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const msg = document.getElementById('catatan-msg');
-    msg.textContent = "Menyimpan...";
-    const data = {
-        action: 'saveCatatan', nis: currentUser.nis,
-        tanggal: document.getElementById('c-tanggal').value,
-        namaPekerjaan: document.getElementById('c-namaPekerjaan').value,
-        perencanaan: document.getElementById('c-perencanaan').value,
-        pelaksanaan: document.getElementById('c-pelaksanaan').value,
-        catatanInstruktur: document.getElementById('c-catatanInstruktur').value
-    };
-    try {
-        const res = await fetch(API_URL, { 
-            method: 'POST', 
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
-            body: JSON.stringify(data) 
-        });
-        const result = await res.json();
-        if(result.status === 'success'){
-            msg.style.color = 'green'; msg.innerHTML = "<i class='fas fa-check-circle'></i> Berhasil disimpan!";
-            document.getElementById('catatan-form').reset();
-        } else {
-            msg.style.color = 'red'; msg.textContent = "Gagal menyimpan!";
-        }
-    } catch (error) { msg.style.color = 'red'; msg.textContent = "Gagal terhubung!"; }
-});
-
-// DOKUMENTASI UPLOAD BASE64 (DENGAN HEADER TEXT/PLAIN)
-document.getElementById('dokumen-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const msg = document.getElementById('dokumen-msg');
-    const file = document.getElementById('d-foto').files[0];
-    if(!file) return;
-
-    msg.textContent = "Compressing image...";
-    const reader = new FileReader();
-    reader.onload = async function(event) {
-        const base64 = event.target.result;
-        msg.textContent = "Uploading...";
+        // Pindah halaman
+        document.getElementById('login-page').classList.add('hidden');
+        document.getElementById('dashboard-page').classList.remove('hidden');
         
-        const data = {
-            action: 'saveDokumentasi', nis: currentUser.nis,
-            tanggal: document.getElementById('d-tanggal').value,
-            keterangan: document.getElementById('d-keterangan').value,
-            fileName: `PKL_${currentUser.nis}_${Date.now()}.jpg`,
-            base64: base64
-        };
-        try {
-            const res = await fetch(API_URL, { 
-                method: 'POST', 
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
-                body: JSON.stringify(data) 
-            });
-            const result = await res.json();
-            if(result.status === 'success'){
-                msg.style.color = 'green'; msg.innerHTML = "<i class='fas fa-check-circle'></i> Upload berhasil!";
-                document.getElementById('dokumen-form').reset();
-                loadDokumentasi();
-            } else {
-                msg.style.color = 'red'; msg.textContent = "Gagal Upload ke Server!";
-            }
-        } catch (error) { msg.style.color = 'red'; msg.textContent = "Gagal terhubung!"; }
-    };
-    reader.readAsDataURL(file);
-});
-
-async function loadDokumentasi() {
-    try {
-        const res = await fetch(`${API_URL}?action=getDokumentasi&nis=${currentUser.nis}`);
-        const docs = await res.json();
-        const galeri = document.getElementById('galeri-foto');
-        galeri.innerHTML = '';
-        
-        if (docs.length > 0) {
-            docs.reverse().forEach(row => {
-                let imgSrc = row.url;
-                if(imgSrc.includes("drive.google.com")) {
-                    const fileId = imgSrc.split('/d/')[1]?.split('/')[0];
-                    if(fileId) imgSrc = `https://drive.google.com/uc?export=view&id=${fileId}`;
-                }
-                galeri.innerHTML += `<div class="galeri-item"><img src="${imgSrc}" alt="Dokumentasi"><div class="desc"><b>${row.keterangan}</b><small>${row.tanggal}</small></div></div>`;
-            });
-        } else {
-            galeri.innerHTML = '<p style="color:#94a3b8; text-align:center;">Belum ada dokumentasi.</p>';
-        }
-    } catch (error) { console.error("Gagal memuat dokumentasi"); }
-}
-
-// GENERATE PDF
-function generatePDF() {
-    const d = currentUser.data;
-    const printArea = document.getElementById('print-area');
-    
-    document.getElementById('pdf-profil').innerHTML = `
-        <p><b>Nama:</b> ${d[1]} | <b>NIS:</b> ${d[0]} | <b>Kelas:</b> ${d[2]}</p>
-        <p><b>Tempat PKL:</b> ${d[10]} | <b>Pembimbing:</b> ${d[15]}</p>
-        <hr style="margin: 10px 0;">
-    `;
-
-    const rows = document.querySelector('#tabel-jurnal tbody').innerHTML;
-    document.getElementById('pdf-tabel-jurnal').innerHTML = rows;
-
-    document.getElementById('pdf-rekap').innerHTML = `
-        Hadir: ${document.getElementById('r-hadir').textContent} hari <br>
-        Izin: ${document.getElementById('r-izin').textContent} hari <br>
-        Sakit: ${document.getElementById('r-sakit').textContent} hari <br>
-        Bolos: ${document.getElementById('r-bolos').textContent} hari
-    `;
-
-    printArea.style.display = 'block';
-    const opt = {
-        margin:       10,
-        filename:     `Jurnal_PKL_${d[1]}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-    html2pdf().set(opt).from(printArea).save().then(() => {
-        printArea.style.display = 'none';
+        // Load data awal
+        loadJurnal();
+      } else {
+        msg.innerText = res.message;
+        msg.className = 'msg error';
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      msg.innerText = "Gagal terhubung ke server. Cek koneksi atau URL API.";
+      msg.className = 'msg error';
     });
 }
 
-// LOGOUT
-document.getElementById('logout-btn').addEventListener('click', () => {
-    localStorage.removeItem('pklUser');
-    currentUser = null;
-    dashboardPage.classList.add('hidden');
-    loginPage.classList.remove('hidden');
-    nisInput.value = '';
-    loginError.textContent = '';
-});
+function handleLogout() {
+  location.reload();
+}
+
+// ==========================================
+// NAVIGATION
+// ==========================================
+function openTab(tabId) {
+  // Update tombol aktif
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  
+  // Hide semua tab
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+  
+  // Show tab yang dipilih
+  document.getElementById('tab-' + tabId).classList.remove('hidden');
+
+  // Load data tergantung tab
+  if(tabId === 'jurnal') loadJurnal();
+  if(tabId === 'catatan') loadCatatan();
+  if(tabId === 'foto') loadFoto();
+}
+
+// ==========================================
+// HELPER: POST DATA
+// ==========================================
+function sendPost(data, successMsg, msgElementId) {
+  const msgEl = document.getElementById(msgElementId);
+  msgEl.innerText = "Sedang menyimpan...";
+  msgEl.className = 'msg';
+
+  fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' }, // Penting untuk menghindari error CORS
+    body: JSON.stringify(data)
+  })
+  .then(r => r.json())
+  .then(res => {
+    if(res.status === 'success') {
+      msgEl.innerText = successMsg;
+      msgEl.className = 'msg success';
+      
+      // Reset form jika ada (opsional, tapi lebih rapi)
+      // document.getElementById(msgElementId).closest('form').reset(); 
+      
+      // Refresh data otomatis
+      if(msgElementId.startsWith('j')) loadJurnal();
+      if(msgElementId.startsWith('c')) loadCatatan();
+      if(msgElementId.startsWith('d')) loadFoto();
+
+    } else {
+      msgEl.innerText = "Gagal: " + res.message;
+      msgEl.className = 'msg error';
+    }
+  })
+  .catch(e => {
+    console.error(e);
+    msgEl.innerText = "Gagal koneksi internet.";
+    msgEl.className = 'msg error';
+  });
+}
+
+// ==========================================
+// FITUR JURNAL
+// ==========================================
+function saveJurnal() {
+  if(!confirm("Yakin simpan jurnal ini?")) return;
+
+  const data = {
+    action: 'saveJurnal',
+    nis: currentUser.nis,
+    tanggal: document.getElementById('j-tgl').value,
+    kehadiran: document.getElementById('j-hadir').value,
+    unit: document.getElementById('j-unit').value,
+    catatan: document.getElementById('j-catatan').value
+  };
+  sendPost(data, "Jurnal berhasil disimpan!", 'j-msg');
+}
+
+function loadJurnal() {
+  fetch(`${API_URL}?action=getJurnal&nis=${currentUser.nis}`)
+    .then(r => r.json())
+    .then(data => {
+      const tbody = document.querySelector('#tabel-jurnal tbody');
+      tbody.innerHTML = '';
+      
+      if(Array.isArray(data) && data.length > 0) {
+        // Urutkan dari yang terbaru
+        data.reverse().forEach(d => {
+          const row = `
+            <tr>
+              <td>${d.tanggal}</td>
+              <td><span style="font-weight:bold; color:var(--primary)">${d.kehadiran}</span></td>
+              <td>${d.unit}</td>
+              <td>${d.catatan}</td>
+            </tr>`;
+          tbody.innerHTML += row;
+        });
+      } else {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#999;">Belum ada data.</td></tr>';
+      }
+    });
+}
+
+// ==========================================
+// FITUR CATATAN
+// ==========================================
+function saveCatatan() {
+  if(!confirm("Yakin simpan catatan ini?")) return;
+
+  const data = {
+    action: 'saveCatatan',
+    nis: currentUser.nis,
+    tanggal: document.getElementById('c-tgl').value,
+    pekerjaan: document.getElementById('c-kerja').value,
+    perencanaan: document.getElementById('c-plan').value,
+    pelaksanaan: document.getElementById('c-do').value,
+    catatanInstruktur: ''
+  };
+  sendPost(data, "Catatan berhasil disimpan!", 'c-msg');
+}
+
+function loadCatatan() {
+  fetch(`${API_URL}?action=getCatatan&nis=${currentUser.nis}`)
+    .then(r => r.json())
+    .then(data => {
+      const tbody = document.querySelector('#tabel-catatan tbody');
+      tbody.innerHTML = '';
+      
+      if(Array.isArray(data) && data.length > 0) {
+        data.reverse().forEach(d => {
+          const row = `
+            <tr>
+              <td>${d.tanggal}</td>
+              <td>${d.pekerjaan}</td>
+              <td>${d.pelaksanaan}</td>
+            </tr>`;
+          tbody.innerHTML += row;
+        });
+      } else {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#999;">Belum ada catatan.</td></tr>';
+      }
+    });
+}
+
+// ==========================================
+// FITUR FOTO
+// ==========================================
+function uploadFoto() {
+  const fileInput = document.getElementById('d-file');
+  if(fileInput.files.length === 0) {
+    alert("Pilih foto terlebih dahulu!");
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const data = {
+      action: 'saveDokumentasi',
+      nis: currentUser.nis,
+      tanggal: document.getElementById('d-tgl').value,
+      keterangan: document.getElementById('d-ket').value,
+      base64: e.target.result
+    };
+    sendPost(data, "Foto berhasil diupload!", 'd-msg');
+  };
+  reader.readAsDataURL(fileInput.files[0]);
+}
+
+function loadFoto() {
+  fetch(`${API_URL}?action=getDokumentasi&nis=${currentUser.nis}`)
+    .then(r => r.json())
+    .then(data => {
+      const gal = document.getElementById('galeri');
+      gal.innerHTML = '';
+      
+      if(Array.isArray(data) && data.length > 0) {
+        data.reverse().forEach(d => {
+          let imgUrl = d.url;
+          // Konversi URL Google Drive ke thumbnail direct link
+          if(imgUrl.includes('drive.google.com')) {
+            const id = imgUrl.split('/d/')[1].split('/')[0];
+            // Menggunakan ukuran w400 untuk loading lebih cepat
+            imgUrl = `https://drive.google.com/thumbnail?id=${id}&sz=w400`;
+          }
+          
+          const item = `
+            <div onclick="window.open('${d.url}', '_blank')">
+              <img src="${imgUrl}" loading="lazy" alt="Dokumentasi">
+              <small>${d.keterangan}</small>
+            </div>`;
+          gal.innerHTML += item;
+        });
+      } else {
+        gal.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#999;">Belum ada foto dokumentasi.</p>';
+      }
+    });
+}
