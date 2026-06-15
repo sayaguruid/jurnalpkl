@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jurnal PKL SMK Negeri 4 Garut</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Library untuk Download PDF -->
@@ -14,14 +15,17 @@
     <!-- LOGIN PAGE -->
     <div id="login-page" class="container">
         <div class="login-box">
+            <div class="login-logo">
+                <i class="fas fa-school"></i>
+            </div>
             <h2>JURNAL PKL 2026</h2>
-            <p>SMK Negeri 4 Garut</p>
+            <p class="subtitle">SMK Negeri 4 Garut</p>
             <form id="login-form">
                 <div class="input-group">
-                    <i class="fas fa-id-card"></i>
-                    <input type="text" id="nis-input" placeholder="Masukkan NIS" required>
+                    <i class="fas fa-id-badge"></i>
+                    <input type="text" id="nis-input" placeholder="Masukkan Nomor Induk Siswa" required>
                 </div>
-                <button type="submit" id="login-btn">MASUK</button>
+                <button type="submit" id="login-btn" class="btn-primary">MASUK</button>
                 <p id="login-error" class="error-msg"></p>
             </form>
         </div>
@@ -30,19 +34,22 @@
     <!-- DASHBOARD PAGE -->
     <div id="dashboard-page" class="container hidden">
         <nav class="navbar">
-            <h2>Dashboard PKL</h2>
+            <div class="nav-brand">
+                <i class="fas fa-book-open"></i>
+                <span>Dashboard PKL</span>
+            </div>
             <div class="nav-right">
-                <span id="user-name">Halo, Siswa</span>
-                <button id="logout-btn"><i class="fas fa-sign-out-alt"></i> Keluar</button>
+                <span id="user-name"><i class="fas fa-user-circle"></i> Siswa</span>
+                <button id="logout-btn" class="btn-danger-sm"><i class="fas fa-sign-out-alt"></i> Keluar</button>
             </div>
         </nav>
 
         <div class="tabs">
-            <button class="tab-btn active" onclick="openTab('profil')">Identitas</button>
-            <button class="tab-btn" onclick="openTab('jurnal')">Jurnal Harian</button>
-            <button class="tab-btn" onclick="openTab('catatan')">Catatan Kegiatan</button>
-            <button class="tab-btn" onclick="openTab('dokumen')">Dokumentasi</button>
-            <button class="tab-btn" onclick="openTab('rekap')">Rekap & Cetak</button>
+            <button class="tab-btn active" onclick="openTab('profil', this)"><i class="fas fa-id-card"></i> Identitas</button>
+            <button class="tab-btn" onclick="openTab('jurnal', this)"><i class="fas fa-pen-alt"></i> Jurnal</button>
+            <button class="tab-btn" onclick="openTab('catatan', this)"><i class="fas fa-file-alt"></i> Catatan</button>
+            <button class="tab-btn" onclick="openTab('dokumen', this)"><i class="fas fa-camera-retro"></i> Dokumen</button>
+            <button class="tab-btn" onclick="openTab('rekap', this)"><i class="fas fa-chart-pie"></i> Rekap</button>
         </div>
 
         <div class="dashboard-content">
@@ -50,116 +57,139 @@
             <!-- TAB PROFIL -->
             <div id="profil" class="tab-content active">
                 <div class="card">
-                    <h3><i class="fas fa-user"></i> Identitas DUDIKA & Peserta</h3>
-                    <form id="profil-form">
-                        <h4>Identitas DUDIKA</h4>
+                    <div class="card-header">
+                        <h3>Identitas DUDIKA & Peserta</h3>
+                        <div class="card-icon"><i class="fas fa-user-edit"></i></div>
+                    </div>
+                    <form id="profil-form" class="modern-form">
+                        <div class="section-title">1. Identitas DUDIKA</div>
                         <div class="form-row">
-                            <input type="text" id="p-namaDUDIKA" placeholder="Nama DUDIKA">
-                            <input type="text" id="p-bidangUsaha" placeholder="Bidang Usaha/Jenis Kegiatan">
+                            <div class="form-group"><input type="text" id="p-namaDUDIKA" placeholder="Nama DUDIKA"><label>Nama DUDIKA</label></div>
+                            <div class="form-group"><input type="text" id="p-bidangUsaha" placeholder="Bidang Usaha/Jenis Kegiatan"><label>Bidang Usaha</label></div>
                         </div>
                         <div class="form-row">
-                            <input type="text" id="p-alamatDUDIKA" placeholder="Alamat DUDIKA">
-                            <input type="text" id="p-telpDUDIKA" placeholder="No. Telp DUDIKA">
+                            <div class="form-group"><input type="text" id="p-alamatDUDIKA" placeholder="Alamat DUDIKA"><label>Alamat</label></div>
+                            <div class="form-group"><input type="text" id="p-telpDUDIKA" placeholder="No. Telp DUDIKA"><label>No. Telepon</label></div>
                         </div>
                         <div class="form-row">
-                            <input type="text" id="p-pimpinanDUDIKA" placeholder="Nama Pimpinan">
-                            <input type="text" id="p-pembimbingDUDIKA" placeholder="Nama Pembimbing DUDIKA">
+                            <div class="form-group"><input type="text" id="p-pimpinanDUDIKA" placeholder="Nama Pimpinan"><label>Nama Pimpinan</label></div>
+                            <div class="form-group"><input type="text" id="p-pembimbingDUDIKA" placeholder="Nama Pembimbing"><label>Nama Pembimbing</label></div>
                         </div>
 
-                        <h4 style="margin-top:20px;">Identitas Peserta</h4>
+                        <div class="section-title">2. Identitas Peserta</div>
                         <div class="form-row">
-                            <input type="text" id="p-nama" placeholder="Nama Lengkap">
-                            <input type="text" id="p-nis" placeholder="NIS" disabled>
-                            <input type="text" id="p-kelas" placeholder="Kelas">
+                            <div class="form-group"><input type="text" id="p-nama" placeholder="Nama Lengkap"><label>Nama Lengkap</label></div>
+                            <div class="form-group"><input type="text" id="p-nis" placeholder="NIS" disabled><label>NIS</label></div>
+                            <div class="form-group"><input type="text" id="p-kelas" placeholder="Kelas"><label>Kelas</label></div>
                         </div>
                         <div class="form-row">
-                            <input type="text" id="p-ttl" placeholder="Tempat, Tanggal Lahir">
-                            <select id="p-golDar"><option value="">Gol. Darah</option><option>O</option><option>A</option><option>B</option><option>AB</option></select>
+                            <div class="form-group"><input type="text" id="p-ttl" placeholder="Tempat, Tanggal Lahir"><label>Tempat, Tanggal Lahir</label></div>
+                            <div class="form-group">
+                                <select id="p-golDar"><option value="">Pilih Gol. Darah</option><option>O</option><option>A</option><option>B</option><option>AB</option></select>
+                                <label>Golongan Darah</label>
+                            </div>
                         </div>
                         <div class="form-row">
-                            <input type="text" id="p-alamatSiswa" placeholder="Alamat Siswa">
-                            <input type="text" id="p-noHpSiswa" placeholder="No. HP Siswa">
+                            <div class="form-group"><input type="text" id="p-alamatSiswa" placeholder="Alamat Siswa"><label>Alamat Siswa</label></div>
+                            <div class="form-group"><input type="text" id="p-noHpSiswa" placeholder="No. HP Siswa"><label>No. HP Siswa</label></div>
                         </div>
                         <div class="form-row">
-                            <input type="text" id="p-namaOrtu" placeholder="Nama Orang Tua/Wali">
-                            <input type="text" id="p-alamatOrtu" placeholder="Alamat Ortu">
-                            <input type="text" id="p-noHpOrtu" placeholder="No. HP Ortu">
+                            <div class="form-group"><input type="text" id="p-namaOrtu" placeholder="Nama Orang Tua/Wali"><label>Nama Orang Tua/Wali</label></div>
+                            <div class="form-group"><input type="text" id="p-alamatOrtu" placeholder="Alamat Ortu"><label>Alamat Ortu</label></div>
+                            <div class="form-group"><input type="text" id="p-noHpOrtu" placeholder="No. HP Ortu"><label>No. HP Ortu</label></div>
                         </div>
                         
-                        <h4 style="margin-top:20px;">Pembimbing</h4>
+                        <div class="section-title">3. Pembimbing</div>
                         <div class="form-row">
-                            <input type="text" id="p-instruktur" placeholder="Nama Instruktur">
-                            <input type="text" id="p-guruPembimbing" placeholder="Nama Guru Pembimbing">
+                            <div class="form-group"><input type="text" id="p-instruktur" placeholder="Nama Instruktur"><label>Nama Instruktur</label></div>
+                            <div class="form-group"><input type="text" id="p-guruPembimbing" placeholder="Nama Guru Pembimbing"><label>Nama Guru Pembimbing</label></div>
                         </div>
 
-                        <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Simpan Identitas</button>
-                        <p id="profil-msg"></p>
+                        <button type="submit" class="btn-primary" style="margin-top: 20px;"><i class="fas fa-save"></i> Simpan Identitas</button>
+                        <p id="profil-msg" class="msg-feedback"></p>
                     </form>
                 </div>
             </div>
 
             <!-- TAB JURNAL -->
             <div id="jurnal" class="tab-content">
-                <div class="card form-card">
-                    <h3><i class="fas fa-pen"></i> Isi Jurnal Harian</h3>
-                    <form id="jurnal-form">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Input Jurnal Harian</h3>
+                        <div class="card-icon"><i class="fas fa-pen-alt"></i></div>
+                    </div>
+                    <form id="jurnal-form" class="modern-form">
                         <div class="form-row">
-                            <input type="date" id="j-tanggal" required>
-                            <select id="j-kehadiran" required>
-                                <option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option><option value="Bolos">Bolos</option>
-                            </select>
+                            <div class="form-group"><input type="date" id="j-tanggal" required><label>Tanggal</label></div>
+                            <div class="form-group">
+                                <select id="j-kehadiran" required>
+                                    <option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option><option value="Bolos">Bolos</option>
+                                </select>
+                                <label>Kehadiran</label>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <input type="text" id="j-unit" placeholder="Unit Kerja / Pekerjaan" required>
-                        </div>
-                        <div class="form-group">
-                            <textarea id="j-catatan" rows="3" placeholder="Catatan Kegiatan..."></textarea>
-                        </div>
-                        <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Simpan Jurnal</button>
-                        <p id="jurnal-msg"></p>
+                        <div class="form-group"><input type="text" id="j-unit" placeholder="Unit Kerja / Pekerjaan" required><label>Unit Kerja / Pekerjaan</label></div>
+                        <div class="form-group"><textarea id="j-catatan" rows="3" placeholder="Catatan Kegiatan..." required></textarea><label>Catatan Kegiatan</label></div>
+                        <button type="submit" class="btn-primary"><i class="fas fa-plus-circle"></i> Simpan Jurnal</button>
+                        <p id="jurnal-msg" class="msg-feedback"></p>
                     </form>
                 </div>
                 <div class="card">
-                    <h3>Riwayat Jurnal</h3>
+                    <div class="card-header">
+                        <h3>Riwayat Jurnal</h3>
+                    </div>
                     <div class="table-responsive">
-                        <table id="tabel-jurnal">
+                        <table class="modern-table">
                             <thead><tr><th>Tanggal</th><th>Pekerjaan</th><th>Catatan</th><th>Status</th></tr></thead>
-                            <tbody></tbody>
+                            <tbody id="jurnal-table-body"></tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <!-- TAB CATATAN KEGIATAN -->
+            <!-- TAB CATATAN -->
             <div id="catatan" class="tab-content">
-                <div class="card form-card">
-                    <h3><i class="fas fa-book"></i> Catatan Kegiatan PKL</h3>
-                    <form id="catatan-form">
-                        <input type="date" id="c-tanggal" required>
-                        <input type="text" id="c-namaPekerjaan" placeholder="A. Nama Pekerjaan" required>
-                        <textarea id="c-perencanaan" rows="3" placeholder="B. Perencanaan Kegiatan"></textarea>
-                        <textarea id="c-pelaksanaan" rows="3" placeholder="C. Pelaksanaan Kegiatan / Hasil"></textarea>
-                        <textarea id="c-catatanInstruktur" rows="3" placeholder="D. Catatan Instruktur"></textarea>
-                        <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Simpan Catatan</button>
-                        <p id="catatan-msg"></p>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Catatan Kegiatan PKL</h3>
+                        <div class="card-icon"><i class="fas fa-file-alt"></i></div>
+                    </div>
+                    <form id="catatan-form" class="modern-form">
+                        <div class="form-group"><input type="date" id="c-tanggal" required><label>Tanggal</label></div>
+                        <div class="form-group"><input type="text" id="c-namaPekerjaan" placeholder="A. Nama Pekerjaan" required><label>Nama Pekerjaan</label></div>
+                        <div class="form-group"><textarea id="c-perencanaan" rows="3" placeholder="B. Perencanaan Kegiatan"></textarea><label>Perencanaan Kegiatan</label></div>
+                        <div class="form-group"><textarea id="c-pelaksanaan" rows="3" placeholder="C. Pelaksanaan Kegiatan / Hasil"></textarea><label>Pelaksanaan Kegiatan / Hasil</label></div>
+                        <div class="form-group"><textarea id="c-catatanInstruktur" rows="3" placeholder="D. Catatan Instruktur"></textarea><label>Catatan Instruktur</label></div>
+                        <button type="submit" class="btn-primary"><i class="fas fa-plus-circle"></i> Simpan Catatan</button>
+                        <p id="catatan-msg" class="msg-feedback"></p>
                     </form>
                 </div>
             </div>
 
             <!-- TAB DOKUMENTASI -->
             <div id="dokumen" class="tab-content">
-                <div class="card form-card">
-                    <h3><i class="fas fa-camera"></i> Upload Dokumentasi</h3>
-                    <form id="dokumen-form">
-                        <input type="date" id="d-tanggal" required>
-                        <input type="file" id="d-foto" accept="image/*" required>
-                        <input type="text" id="d-keterangan" placeholder="Keterangan Foto" required>
-                        <button type="submit" class="btn-submit"><i class="fas fa-upload"></i> Upload Foto</button>
-                        <p id="dokumen-msg"></p>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Upload Dokumentasi</h3>
+                        <div class="card-icon"><i class="fas fa-camera-retro"></i></div>
+                    </div>
+                    <form id="dokumen-form" class="modern-form">
+                        <div class="form-row">
+                            <div class="form-group"><input type="date" id="d-tanggal" required><label>Tanggal</label></div>
+                            <div class="form-group custom-file">
+                                <input type="file" id="d-foto" accept="image/*" required>
+                                <label for="d-foto"><i class="fas fa-upload"></i> Pilih Foto</label>
+                            </div>
+                        </div>
+                        <div class="form-group"><input type="text" id="d-keterangan" placeholder="Keterangan Foto" required><label>Keterangan Foto</label></div>
+                        <button type="submit" class="btn-primary"><i class="fas fa-cloud-upload-alt"></i> Upload</button>
+                        <p id="dokumen-msg" class="msg-feedback"></p>
                     </form>
                 </div>
                 <div class="card">
-                    <h3>Galeri Dokumentasi</h3>
+                    <div class="card-header">
+                        <h3>Galeri Dokumentasi</h3>
+                    </div>
                     <div id="galeri-foto" class="galeri-grid"></div>
                 </div>
             </div>
@@ -167,12 +197,31 @@
             <!-- TAB REKAP & CETAK -->
             <div id="rekap" class="tab-content">
                 <div class="card">
-                    <h3><i class="fas fa-chart-bar"></i> Rekapitulasi Kehadiran</h3>
-                    <div id="rekap-box" class="rekap-container">
-                        <div class="rekap-item hijau"><span>Hadir</span><br><b id="r-hadir">0</b> Hari</div>
-                        <div class="rekap-item kuning"><span>Izin</span><br><b id="r-izin">0</b> Hari</div>
-                        <div class="rekap-item biru"><span>Sakit</span><br><b id="r-sakit">0</b> Hari</div>
-                        <div class="rekap-item merah"><span>Bolos</span><br><b id="r-bolos">0</b> Hari</div>
+                    <div class="card-header">
+                        <h3>Rekapitulasi Kehadiran</h3>
+                        <div class="card-icon"><i class="fas fa-chart-pie"></i></div>
+                    </div>
+                    <div class="rekap-container">
+                        <div class="rekap-card hadir">
+                            <i class="fas fa-check-circle"></i>
+                            <div class="rekap-val" id="r-hadir">0</div>
+                            <div class="rekap-label">Hadir</div>
+                        </div>
+                        <div class="rekap-card izin">
+                            <i class="fas fa-envelope-open"></i>
+                            <div class="rekap-val" id="r-izin">0</div>
+                            <div class="rekap-label">Izin</div>
+                        </div>
+                        <div class="rekap-card sakit">
+                            <i class="fas fa-medkit"></i>
+                            <div class="rekap-val" id="r-sakit">0</div>
+                            <div class="rekap-label">Sakit</div>
+                        </div>
+                        <div class="rekap-card bolos">
+                            <i class="fas fa-times-circle"></i>
+                            <div class="rekap-val" id="r-bolos">0</div>
+                            <div class="rekap-label">Bolos</div>
+                        </div>
                     </div>
                     <button onclick="generatePDF()" class="btn-pdf"><i class="fas fa-file-pdf"></i> Download Jurnal PDF</button>
                 </div>
