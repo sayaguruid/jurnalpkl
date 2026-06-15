@@ -1,4 +1,4 @@
-const API_URL = 'https://script.google.com/macros/s/AKfycbysxppH_OMJdAjxFaukWrBnjZE7D76jWncJa1R6ep12pH3lfV_KKFEK2RAalXOEEJW8tA/exec'; // GANTI INI
+const API_URL = 'https://script.google.com/macros/s/AKfycbysxppH_OMJdAjxFaukWrBnjZE7D76jWncJa1R6ep12pH3lfV_KKFEK2RAalXOEEJW8tA/exec'; // Pastikan URL ini sudah benar tanpa /u/1/
 let currentUser = null;
 
 // NAVIGASI TAB
@@ -48,7 +48,7 @@ loginForm.addEventListener('submit', async (e) => {
 function showDashboard() {
     loginPage.classList.add('hidden');
     dashboardPage.classList.remove('hidden');
-    document.getElementById('user-name').textContent = `Halo, ${currentUser.data[1] || 'Siswa'}`;
+    document.getElementById('user-name').innerHTML = `<i class="fas fa-user-circle"></i> ${currentUser.data[1] || 'Siswa'}`;
     populateProfileForm();
     loadJurnal();
     loadDokumentasi();
@@ -77,7 +77,7 @@ function populateProfileForm() {
     document.getElementById('p-guruPembimbing').value = d[17] || '';
 }
 
-// SIMPAN PROFIL
+// SIMPAN PROFIL (DENGAN HEADER TEXT/PLAIN)
 document.getElementById('profil-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const msg = document.getElementById('profil-msg');
@@ -95,13 +95,21 @@ document.getElementById('profil-form').addEventListener('submit', async (e) => {
         guruPembimbing: document.getElementById('p-guruPembimbing').value
     };
     try {
-        const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
+        const res = await fetch(API_URL, { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+            body: JSON.stringify(data) 
+        });
         const result = await res.json();
-        msg.style.color = 'green'; msg.textContent = "Berhasil disimpan!";
-    } catch (error) { msg.style.color = 'red'; msg.textContent = "Gagal menyimpan!"; }
+        if(result.status === 'success'){
+            msg.style.color = 'green'; msg.innerHTML = "<i class='fas fa-check-circle'></i> Berhasil disimpan!";
+        } else {
+            msg.style.color = 'red'; msg.textContent = "Gagal menyimpan!";
+        }
+    } catch (error) { msg.style.color = 'red'; msg.textContent = "Gagal terhubung!"; }
 });
 
-// JURNAL HARIAN
+// JURNAL HARIAN (DENGAN HEADER TEXT/PLAIN)
 document.getElementById('jurnal-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const msg = document.getElementById('jurnal-msg');
@@ -114,11 +122,20 @@ document.getElementById('jurnal-form').addEventListener('submit', async (e) => {
         kehadiran: document.getElementById('j-kehadiran').value
     };
     try {
-        await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
-        msg.style.color = 'green'; msg.textContent = "Berhasil disimpan!";
-        document.getElementById('jurnal-form').reset();
-        loadJurnal();
-    } catch (error) { msg.style.color = 'red'; msg.textContent = "Gagal!"; }
+        const res = await fetch(API_URL, { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+            body: JSON.stringify(data) 
+        });
+        const result = await res.json();
+        if(result.status === 'success'){
+            msg.style.color = 'green'; msg.innerHTML = "<i class='fas fa-check-circle'></i> Berhasil disimpan!";
+            document.getElementById('jurnal-form').reset();
+            loadJurnal();
+        } else {
+            msg.style.color = 'red'; msg.textContent = "Gagal menyimpan!";
+        }
+    } catch (error) { msg.style.color = 'red'; msg.textContent = "Gagal terhubung!"; }
 });
 
 async function loadJurnal() {
@@ -133,17 +150,16 @@ async function loadJurnal() {
         if (jurnals.length > 0) {
             jurnals.reverse().forEach(row => {
                 const cls = `status status-${row.kehadiran.toLowerCase()}`;
-tbody.innerHTML += `<tr><td>${row.tanggal}</td><td>${row.unitKerja}</td><td>${row.catatan}</td><td><span class="${cls}">${row.kehadiran}</span></td></tr>`;
+                tbody.innerHTML += `<tr><td>${row.tanggal}</td><td>${row.unitKerja}</td><td>${row.catatan}</td><td><span class="${cls}">${row.kehadiran}</span></td></tr>`;
                 if(row.kehadiran === 'Hadir') hadir++;
                 if(row.kehadiran === 'Izin') izin++;
                 if(row.kehadiran === 'Sakit') sakit++;
                 if(row.kehadiran === 'Bolos') bolos++;
             });
         } else {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Belum ada data</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#94a3b8;">Belum ada data jurnal</td></tr>';
         }
         
-        // Update Rekap
         document.getElementById('r-hadir').textContent = hadir;
         document.getElementById('r-izin').textContent = izin;
         document.getElementById('r-sakit').textContent = sakit;
@@ -152,7 +168,7 @@ tbody.innerHTML += `<tr><td>${row.tanggal}</td><td>${row.unitKerja}</td><td>${ro
     } catch (error) { console.error("Gagal memuat jurnal"); }
 }
 
-// CATATAN KEGIATAN
+// CATATAN KEGIATAN (DENGAN HEADER TEXT/PLAIN)
 document.getElementById('catatan-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const msg = document.getElementById('catatan-msg');
@@ -166,13 +182,22 @@ document.getElementById('catatan-form').addEventListener('submit', async (e) => 
         catatanInstruktur: document.getElementById('c-catatanInstruktur').value
     };
     try {
-        await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
-        msg.style.color = 'green'; msg.textContent = "Berhasil disimpan!";
-        document.getElementById('catatan-form').reset();
-    } catch (error) { msg.style.color = 'red'; msg.textContent = "Gagal!"; }
+        const res = await fetch(API_URL, { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+            body: JSON.stringify(data) 
+        });
+        const result = await res.json();
+        if(result.status === 'success'){
+            msg.style.color = 'green'; msg.innerHTML = "<i class='fas fa-check-circle'></i> Berhasil disimpan!";
+            document.getElementById('catatan-form').reset();
+        } else {
+            msg.style.color = 'red'; msg.textContent = "Gagal menyimpan!";
+        }
+    } catch (error) { msg.style.color = 'red'; msg.textContent = "Gagal terhubung!"; }
 });
 
-// DOKUMENTASI UPLOAD BASE64
+// DOKUMENTASI UPLOAD BASE64 (DENGAN HEADER TEXT/PLAIN)
 document.getElementById('dokumen-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const msg = document.getElementById('dokumen-msg');
@@ -193,11 +218,20 @@ document.getElementById('dokumen-form').addEventListener('submit', async (e) => 
             base64: base64
         };
         try {
-            await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
-            msg.style.color = 'green'; msg.textContent = "Upload berhasil!";
-            document.getElementById('dokumen-form').reset();
-            loadDokumentasi();
-        } catch (error) { msg.style.color = 'red'; msg.textContent = "Gagal Upload!"; }
+            const res = await fetch(API_URL, { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+                body: JSON.stringify(data) 
+            });
+            const result = await res.json();
+            if(result.status === 'success'){
+                msg.style.color = 'green'; msg.innerHTML = "<i class='fas fa-check-circle'></i> Upload berhasil!";
+                document.getElementById('dokumen-form').reset();
+                loadDokumentasi();
+            } else {
+                msg.style.color = 'red'; msg.textContent = "Gagal Upload ke Server!";
+            }
+        } catch (error) { msg.style.color = 'red'; msg.textContent = "Gagal terhubung!"; }
     };
     reader.readAsDataURL(file);
 });
@@ -211,17 +245,15 @@ async function loadDokumentasi() {
         
         if (docs.length > 0) {
             docs.reverse().forEach(row => {
-                // Ubah URL Google Drive menjadi direct link jika perlu (Ini trik lama, tapi gasal URL langsung kadang error CORS)
                 let imgSrc = row.url;
                 if(imgSrc.includes("drive.google.com")) {
                     const fileId = imgSrc.split('/d/')[1]?.split('/')[0];
                     if(fileId) imgSrc = `https://drive.google.com/uc?export=view&id=${fileId}`;
                 }
-
-                galeri.innerHTML += `<div class="galeri-item"><img src="${imgSrc}" alt="Dokumentasi"><p>${row.keterangan}<br><small>${row.tanggal}</small></p></div>`;
+                galeri.innerHTML += `<div class="galeri-item"><img src="${imgSrc}" alt="Dokumentasi"><div class="desc"><b>${row.keterangan}</b><small>${row.tanggal}</small></div></div>`;
             });
         } else {
-            galeri.innerHTML = '<p>Belum ada dokumentasi.</p>';
+            galeri.innerHTML = '<p style="color:#94a3b8; text-align:center;">Belum ada dokumentasi.</p>';
         }
     } catch (error) { console.error("Gagal memuat dokumentasi"); }
 }
@@ -231,18 +263,15 @@ function generatePDF() {
     const d = currentUser.data;
     const printArea = document.getElementById('print-area');
     
-    // Isi Profil
     document.getElementById('pdf-profil').innerHTML = `
         <p><b>Nama:</b> ${d[1]} | <b>NIS:</b> ${d[0]} | <b>Kelas:</b> ${d[2]}</p>
         <p><b>Tempat PKL:</b> ${d[10]} | <b>Pembimbing:</b> ${d[15]}</p>
         <hr style="margin: 10px 0;">
     `;
 
-    // Isi Tabel Jurnal
     const rows = document.querySelector('#tabel-jurnal tbody').innerHTML;
     document.getElementById('pdf-tabel-jurnal').innerHTML = rows;
 
-    // Isi Rekap
     document.getElementById('pdf-rekap').innerHTML = `
         Hadir: ${document.getElementById('r-hadir').textContent} hari <br>
         Izin: ${document.getElementById('r-izin').textContent} hari <br>
@@ -250,7 +279,6 @@ function generatePDF() {
         Bolos: ${document.getElementById('r-bolos').textContent} hari
     `;
 
-    // Print logic
     printArea.style.display = 'block';
     const opt = {
         margin:       10,
